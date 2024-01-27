@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0ieolhg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:collaboration id="Collaboration_0p97laf">
+    <bpmn:participant id="Participant_1sb2rp6" name="Car Trader Workflow" processRef="Car-Trader-Workflow" />
+  </bpmn:collaboration>
+  <bpmn:process id="Car-Trader-Workflow" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0sxzi80">
+      <bpmn:lane id="Lane_0b65bcv" name="SALES">
+        <bpmn:flowNodeRef>Task_Prize_Setting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0j3iyxk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Car_Selling</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1t1x9gn" name="SALES PREPARATION">
+        <bpmn:flowNodeRef>Task_Sell_Preparing</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1qsebmj" name="CAR WOKRSHOP">
+        <bpmn:flowNodeRef>Gateway_0a7enkf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Car_Workshop</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_05jhe4s" name="DIAGNOSTIC">
+        <bpmn:flowNodeRef>Task_Diagnostic</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0p34i8k" name="PARKING" />
+      <bpmn:lane id="Lane_0e0huuz" name="PROCUREMENT">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Register_Car</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_0j31do0" />
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:exclusiveGateway id="Gateway_0a7enkf">
+      <bpmn:incoming>Flow_0inkoq7</bpmn:incoming>
+      <bpmn:outgoing>Flow_04hirgb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0n6stov</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Car_Workshop" name="Car Workshop" camunda:candidateGroups="CAR_WOKRSHOP">
+      <bpmn:incoming>Flow_04hirgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1abtmjd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Sell_Preparing" name="Preparing Car to Sell" camunda:candidateGroups="SALES_PREPARATION">
+      <bpmn:incoming>Flow_0n6stov</bpmn:incoming>
+      <bpmn:incoming>Flow_1abtmjd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fwdrtv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Prize_Setting" name="Prize Setting" camunda:candidateGroups="SALES">
+      <bpmn:incoming>Flow_1fwdrtv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v60t2q</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0j3iyxk">
+      <bpmn:incoming>Flow_0ozijiq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0bk6e3k</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_Register_Car" name="Register Car" camunda:assignee="${createdBy}" camunda:candidateGroups="PROCUREMENT">
+      <bpmn:incoming>Flow_0bk6e3k</bpmn:incoming>
+      <bpmn:outgoing>Flow_18gpaql</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Car_Selling" name="Car Selling" camunda:candidateGroups="SALES">
+      <bpmn:incoming>Flow_1v60t2q</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ozijiq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Diagnostic" name="Diagnostic" camunda:candidateGroups="DIAGNOSTIC">
+      <bpmn:incoming>Flow_18gpaql</bpmn:incoming>
+      <bpmn:outgoing>Flow_0inkoq7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0inkoq7" sourceRef="Task_Diagnostic" targetRef="Gateway_0a7enkf" />
+    <bpmn:sequenceFlow id="Flow_0n6stov" name="isWorkshopRequired==false" sourceRef="Gateway_0a7enkf" targetRef="Task_Sell_Preparing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isWorkshopRequired==false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_04hirgb" name="${isWorkshopRequired==true}" sourceRef="Gateway_0a7enkf" targetRef="Task_Car_Workshop">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isWorkshopRequired==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1abtmjd" sourceRef="Task_Car_Workshop" targetRef="Task_Sell_Preparing" />
+    <bpmn:sequenceFlow id="Flow_1fwdrtv" sourceRef="Task_Sell_Preparing" targetRef="Task_Prize_Setting" />
+    <bpmn:sequenceFlow id="Flow_1v60t2q" sourceRef="Task_Prize_Setting" targetRef="Task_Car_Selling" />
+    <bpmn:sequenceFlow id="Flow_0ozijiq" sourceRef="Task_Car_Selling" targetRef="Event_0j3iyxk" />
+    <bpmn:sequenceFlow id="Flow_0bk6e3k" sourceRef="StartEvent_1" targetRef="Task_Register_Car" />
+    <bpmn:sequenceFlow id="Flow_18gpaql" sourceRef="Task_Register_Car" targetRef="Task_Diagnostic" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0p97laf">
+      <bpmndi:BPMNShape id="Participant_1sb2rp6_di" bpmnElement="Participant_1sb2rp6" isHorizontal="true">
+        <dc:Bounds x="160" y="110" width="1330" height="1450" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0e0huuz_di" bpmnElement="Lane_0e0huuz" isHorizontal="true">
+        <dc:Bounds x="190" y="110" width="1300" height="230" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0p34i8k_di" bpmnElement="Lane_0p34i8k" isHorizontal="true">
+        <dc:Bounds x="190" y="340" width="1300" height="230" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_05jhe4s_di" bpmnElement="Lane_05jhe4s" isHorizontal="true">
+        <dc:Bounds x="190" y="570" width="1300" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1qsebmj_di" bpmnElement="Lane_1qsebmj" isHorizontal="true">
+        <dc:Bounds x="190" y="810" width="1300" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1t1x9gn_di" bpmnElement="Lane_1t1x9gn" isHorizontal="true">
+        <dc:Bounds x="190" y="1050" width="1300" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0b65bcv_di" bpmnElement="Lane_0b65bcv" isHorizontal="true">
+        <dc:Bounds x="190" y="1300" width="1300" height="260" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_18gpaql_di" bpmnElement="Flow_18gpaql">
+        <di:waypoint x="430" y="190" />
+        <di:waypoint x="460" y="190" />
+        <di:waypoint x="460" y="650" />
+        <di:waypoint x="490" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bk6e3k_di" bpmnElement="Flow_0bk6e3k">
+        <di:waypoint x="278" y="190" />
+        <di:waypoint x="330" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ozijiq_di" bpmnElement="Flow_0ozijiq">
+        <di:waypoint x="1230" y="1410" />
+        <di:waypoint x="1362" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v60t2q_di" bpmnElement="Flow_1v60t2q">
+        <di:waypoint x="1050" y="1410" />
+        <di:waypoint x="1130" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fwdrtv_di" bpmnElement="Flow_1fwdrtv">
+        <di:waypoint x="870" y="1180" />
+        <di:waypoint x="910" y="1180" />
+        <di:waypoint x="910" y="1410" />
+        <di:waypoint x="950" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1abtmjd_di" bpmnElement="Flow_1abtmjd">
+        <di:waypoint x="820" y="940" />
+        <di:waypoint x="820" y="1140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04hirgb_di" bpmnElement="Flow_04hirgb">
+        <di:waypoint x="695" y="900" />
+        <di:waypoint x="770" y="900" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="856" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n6stov_di" bpmnElement="Flow_0n6stov">
+        <di:waypoint x="670" y="925" />
+        <di:waypoint x="670" y="1180" />
+        <di:waypoint x="770" y="1180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="986" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0inkoq7_di" bpmnElement="Flow_0inkoq7">
+        <di:waypoint x="590" y="650" />
+        <di:waypoint x="623" y="650" />
+        <di:waypoint x="623" y="900" />
+        <di:waypoint x="645" y="900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_0a7enkf_di" bpmnElement="Gateway_0a7enkf" isMarkerVisible="true">
+        <dc:Bounds x="645" y="875" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11w7ou0_di" bpmnElement="Task_Car_Workshop">
+        <dc:Bounds x="770" y="860" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17wtygy_di" bpmnElement="Task_Sell_Preparing">
+        <dc:Bounds x="770" y="1140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xmzmek_di" bpmnElement="Task_Prize_Setting">
+        <dc:Bounds x="950" y="1370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j3iyxk_di" bpmnElement="Event_0j3iyxk">
+        <dc:Bounds x="1362" y="1392" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0mwymm9" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fh79xf_di" bpmnElement="Task_Register_Car">
+        <dc:Bounds x="330" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ns7eu3_di" bpmnElement="Task_Car_Selling">
+        <dc:Bounds x="1130" y="1370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cekamy_di" bpmnElement="Task_Diagnostic">
+        <dc:Bounds x="490" y="610" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

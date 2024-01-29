@@ -2,6 +2,7 @@ using CarTrader.Services.Cars.Application.Commands.UpdateCarProcessId;
 using CarTrader.Services.Cars.Application.Interfaces.Services;
 using CarTrader.Services.Cars.Application.Messages;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -10,11 +11,12 @@ namespace CarTrader.Services.Cars.Infrastructure.Services
     public class MessagingBackgroundService(
         IMessageSubscriber messageSubscriber,
         ILogger<MessagingBackgroundService> logger,
-        IMediator mediator) : BackgroundService
+        IServiceScopeFactory serviceScopeFactory
+        ) : BackgroundService
     {
         private readonly IMessageSubscriber _messageSubscriber = messageSubscriber;
         private readonly ILogger<MessagingBackgroundService> _logger = logger;
-        private readonly IMediator _mediator = mediator;
+        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -29,13 +31,16 @@ namespace CarTrader.Services.Cars.Infrastructure.Services
                     async (msg) => {
                         _logger.LogInformation($"Recieved message {msg}");
 
+                        using var scope = _serviceScopeFactory.CreateScope();
+                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
                         var command = new UpdateCarProcessIdCommand()
                         {
                             CarId = msg.CarId,
                             CamundaProcessId = msg.CamundaProcessId
                         };
 
-                        await _mediator.Send(command);
+                        await mediator.Send(command);
                     }
                 );
 

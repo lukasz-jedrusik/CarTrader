@@ -4,7 +4,6 @@ using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using CarTrader.Services.Workflow.Infrastructure.Services;
 using Polly;
 using Microsoft.Extensions.Configuration;
-using CarTrader.Services.Workflow.Application.Messages;
 
 namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
 {

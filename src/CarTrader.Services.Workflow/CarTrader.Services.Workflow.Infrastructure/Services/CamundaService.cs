@@ -35,7 +35,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
         {
             var processParams = new StartProcessInstance()
                 .SetVariable("createdBy", VariableValue.FromObject(userId))
-                .SetVariable("carId", VariableValue.FromObject(carId));
+                .SetVariable("carId", VariableValue.FromObject(carId.ToString()));
 
             processParams.BusinessKey = bussinesKey;
 

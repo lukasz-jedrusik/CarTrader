@@ -25,8 +25,8 @@ namespace CarTrader.Services.Cars.Application.Commands.AddCar
             // validate request
             _validator.ValidateAndThrow(request);
 
-            // map dto in command to entity
-            var car = _mapper.Map<Car>(request.Car);
+            // assign request car to new variable
+            var car = request.Car;
 
             // set properties
             car.Id = Guid.NewGuid();

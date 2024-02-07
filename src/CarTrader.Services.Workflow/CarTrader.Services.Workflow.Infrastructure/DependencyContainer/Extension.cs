@@ -4,6 +4,8 @@ using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using CarTrader.Services.Workflow.Infrastructure.Services;
 using Polly;
 using Microsoft.Extensions.Configuration;
+using CarTrader.Services.Workflow.Application.Interfaces.Repositories;
+using CarTrader.Services.Workflow.Infrastructure.Repositories;
 
 namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
 {
@@ -12,6 +14,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             // Repositories
+            services.AddScoped<ICarProcessRepository, CarProcessRepository>();
 
             // Services
             services.AddSingleton<IMessagePublisher, MessagePublisher>();

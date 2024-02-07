@@ -17,7 +17,6 @@ namespace CarTrader.Services.Cars.Infrastructure.DependencyContainer
             // Services
             services.AddSingleton<IMessagePublisher, MessagePublisher>();
             services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
-            services.AddHostedService<MessagingBackgroundService>();
 
             // Queue
             services.AddHostedService<QueuedHostedService>();

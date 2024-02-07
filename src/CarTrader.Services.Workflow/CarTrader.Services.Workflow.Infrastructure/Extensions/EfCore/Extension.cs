@@ -9,8 +9,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.Extensions.EfCore
         public static IServiceCollection AddEfCore(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DataContext>(x =>
-                x.UseSqlServer(configuration["CPCLEANAPI_CONNECTION_STRING"]))
-                ;
+                x.UseSqlServer(configuration.GetConnectionString("CarTraderWorkflowDatabase")));
 
             return services;
         }

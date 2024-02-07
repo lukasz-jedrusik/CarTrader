@@ -21,6 +21,5 @@ namespace CarTrader.Services.Cars.Domain.Models
         public WheelDriveType WheelDriveType { get; set; }
         public DateTime CreateDate { get; set; }
         public string CreateUserId { get; set; }
-        public string CamundaProcessId { get; set; }
     }
 }

@@ -1,14 +1,16 @@
 namespace CarTrader.Services.Cars.Domain.Exceptions
 {
-    public abstract class CarTraderCarsException : Exception
+    public abstract class CarTraderException : Exception
     {
-        protected CarTraderCarsException() {}
-
-        protected CarTraderCarsException(string message) : base(message)
+        protected CarTraderException()
         {
         }
 
-        protected CarTraderCarsException(string message, Exception innerException) : base(message, innerException)
+        protected CarTraderException(string message) : base(message)
+        {
+        }
+
+        protected CarTraderException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

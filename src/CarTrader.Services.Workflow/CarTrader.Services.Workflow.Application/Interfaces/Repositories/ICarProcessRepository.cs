@@ -9,5 +9,6 @@ namespace CarTrader.Services.Workflow.Application.Interfaces.Repositories
     public interface ICarProcessRepository
     {
         Task AddAsync(CarProcess item);
+        Task<CarProcess> GetByIdAsync(Guid itemId);
     }
 }

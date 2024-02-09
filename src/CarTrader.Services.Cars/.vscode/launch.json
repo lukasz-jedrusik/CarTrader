@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/CarTrader.Services.Cars.Api/bin/Debug/net7.0/CarTrader.Services.Cars.Api.dll",
+            "program": "${workspaceFolder}/CarTrader.Services.Cars.Api/bin/Debug/net8.0/CarTrader.Services.Cars.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/CarTrader.Services.Cars.Api",
             "stopAtEntry": false,

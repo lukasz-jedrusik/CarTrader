@@ -6,22 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarTrader.Services.Cars.Api.Middleware
 {
-    public class ErrorHandlerMiddleware
-    {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ErrorHandlerMiddleware> _logger;
-        private readonly IWebHostEnvironment _hostingEnvironment;
-
-        public ErrorHandlerMiddleware(
-            RequestDelegate next,
-            ILogger<ErrorHandlerMiddleware> logger,
-            IWebHostEnvironment hostingEnvironment
+    public class ErrorHandlerMiddleware(
+        RequestDelegate next,
+        ILogger<ErrorHandlerMiddleware> logger,
+        IWebHostEnvironment hostingEnvironment
             )
-        {
-            _next = next;
-            _logger = logger;
-            _hostingEnvironment = hostingEnvironment;
-        }
+    {
+        private readonly RequestDelegate _next = next;
+        private readonly ILogger<ErrorHandlerMiddleware> _logger = logger;
+        private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
 
         public async Task Invoke(HttpContext context)
         {
@@ -50,21 +43,25 @@ namespace CarTrader.Services.Cars.Api.Middleware
 
                 switch(error)
                 {
-                    case CarTraderCarsException:
+                    case CarTraderException:
+                    {
                         // Other CarTrader.Services.Cars errors and argument null
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         problemDetails.Title = "Bad Request";
                         problemDetails.Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1";
                         problemDetails.Status = (int)HttpStatusCode.BadRequest;
                         break;
+                    }
 
                     default:
+                    {
                         // Unhandled errors
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         problemDetails.Title = "An error occured while processing your request";
                         problemDetails.Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1";
                         problemDetails.Status = (int)HttpStatusCode.InternalServerError;
                         break;
+                    }
                 }
 
                 _logger.LogError("{traceId}|{error}", traceId, error.ToString());

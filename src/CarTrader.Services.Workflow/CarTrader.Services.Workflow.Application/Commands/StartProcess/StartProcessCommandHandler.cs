@@ -15,15 +15,16 @@ namespace CarTrader.Services.Workflow.Application.Commands.StartProcess
 
         public async Task<string> Handle(StartProcessCommand request, CancellationToken cancellationToken)
         {
-            // create process in Camunda
+            // Create process in Camunda
             var camundaProcess = await _camunda.StartProcessAsync(request.CarId, request.BussinesKey, request.UserId);
 
-            // add CarProcess
+            // Create CarProcess entity
             var carProcess = new CarProcess() {
                 CarId = request.CarId,
                 CamundaProcessId = camundaProcess.Id
             };
 
+            // Add CarProcess to db
             await _repository.AddAsync(carProcess);
 
             return camundaProcess.Id;

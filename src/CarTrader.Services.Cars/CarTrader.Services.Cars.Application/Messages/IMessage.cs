@@ -1,6 +1,4 @@
 namespace CarTrader.Services.Cars.Application.Messages
 {
-    public interface IMessage
-    {
-    }
+    public interface IMessage;
 }

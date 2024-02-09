@@ -1,21 +1,17 @@
-using AutoMapper;
 using CarTrader.Services.Cars.Application.Interfaces.Repositories;
 using CarTrader.Services.Cars.Application.Interfaces.Services;
 using CarTrader.Services.Cars.Application.Messages;
-using CarTrader.Services.Cars.Domain.Models;
 using FluentValidation;
 using MediatR;
 
 namespace CarTrader.Services.Cars.Application.Commands.AddCar
 {
     public class AddCarCommandHandler(
-        IMapper mapper,
         ICarsRepository repository,
         IValidator<AddCarCommand> validator,
         IMessagePublisher messagePublisher
-            ) : IRequestHandler<AddCarCommand, Guid>
+        ) : IRequestHandler<AddCarCommand, Guid>
     {
-        private readonly IMapper _mapper = mapper;
         private readonly ICarsRepository _repository = repository;
         private readonly IValidator<AddCarCommand> _validator = validator;
         private readonly IMessagePublisher _messagePublisher = messagePublisher;

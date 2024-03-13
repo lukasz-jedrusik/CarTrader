@@ -1,7 +1,7 @@
 using System.Text;
 using Camunda.Worker;
 using Camunda.Worker.Client;
-using CarTrader.Services.Workflow.Infrastructure.Handlers;
+using CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -34,8 +34,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddMediatR()
         .AddRabbitMq(builder.Configuration)
         .AddCamundaTaskWorker(builder.Configuration)
-        .AddApplication(builder.Configuration)
-        ;
+        .AddApplication(builder.Configuration);
 
     builder.Services.AddHealthChecks();
 }

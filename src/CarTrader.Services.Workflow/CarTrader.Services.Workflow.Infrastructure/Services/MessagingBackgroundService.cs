@@ -25,17 +25,17 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
 
             _messageSubscriber
                 .SubscribeMessage<CreateCarMessage>(
-                    "carTraderCarsQueue",
+                    "CarTraderCarsQueue",
                     "CarTrader.Cars",
-                    "cars",
+                    "Cars",
                     _createCarMessageHandler.HandleAsync
                 );
 
             _messageSubscriber
                 .SubscribeMessage<TaskToCompletedMessage>(
-                    "carTraderCompleteTaskQueue",
+                    "CarTraderCompleteTaskQueue",
                     "CarTrader.Cars",
-                    "completeTask",
+                    "CompleteTask",
                     _taskToCompleteHandler.HandleAsync
                 );
             return Task.CompletedTask;

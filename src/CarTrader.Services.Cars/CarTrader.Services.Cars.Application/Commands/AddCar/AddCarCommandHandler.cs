@@ -34,8 +34,8 @@ namespace CarTrader.Services.Cars.Application.Commands.AddCar
             await _repository.AddAsync(car);
 
             // publish message to RabbitMq
-            var message = new CreateCarMessage(car.Id, $"{car.Year}/{car.Number}/{car.VIN}", "john.doe");
-            await _messagePublisher.PublishMessage("CarTrader.Cars", "cars", message);
+            var message = new CreateCarMessage(car.Id, $"{car.Year}/{car.Number}", "john.doe");
+            await _messagePublisher.PublishMessage("CarTrader.Cars", "Cars", message);
 
             return car.Id;
         }

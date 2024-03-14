@@ -21,12 +21,14 @@ namespace CarTrader.Services.Workflow.Application.Commands.StartProcess
             // Create CarProcess entity
             var carProcess = new CarProcess() {
                 CarId = request.CarId,
-                CamundaProcessId = camundaProcess.Id
+                CamundaProcessId = camundaProcess.Id,
+                BussinesKey = request.BussinesKey
             };
 
             // Add CarProcess to db
             await _repository.AddAsync(carProcess);
 
+            // return camundaId
             return camundaProcess.Id;
         }
     }

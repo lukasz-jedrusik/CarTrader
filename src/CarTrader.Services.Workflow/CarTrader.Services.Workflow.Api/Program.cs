@@ -7,6 +7,7 @@ using CarTrader.Services.Workflow.Infrastructure.Extensions.KeycloakAuth;
 using CarTrader.Services.Workflow.Infrastructure.Extensions.MediatR;
 using CarTrader.Services.Workflow.Infrastructure.Extensions.RabbitMq;
 using CarTrader.Services.Workflow.Infrastructure.Extensions.Swagger;
+using CarTrader.Services.Workflow.Infrastructure.Extensions.CamundaTaskWorker;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +33,8 @@ var builder = WebApplication.CreateBuilder(args);
         .AddKeycloakAuthorization(builder.Configuration)
         .AddMediatR()
         .AddRabbitMq(builder.Configuration)
-        .AddApplication(builder.Configuration)
-        ;
+        .AddCamundaTaskWorker(builder.Configuration)
+        .AddApplication(builder.Configuration);
 
     builder.Services.AddHealthChecks();
 }

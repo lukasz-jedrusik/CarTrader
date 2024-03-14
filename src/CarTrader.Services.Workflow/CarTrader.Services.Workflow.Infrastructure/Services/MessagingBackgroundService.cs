@@ -1,9 +1,6 @@
-using CarTrader.Services.Workflow.Application.Commands.CompleteUserTask;
-using CarTrader.Services.Workflow.Application.Commands.StartProcess;
+using CarTrader.Services.Workflow.Application.Interfaces.Handlers;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using CarTrader.Services.Workflow.Application.Messages;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -12,12 +9,14 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
     public class MessagingBackgroundService(
         IMessageSubscriber messageSubscriber,
         ILogger<MessagingBackgroundService> logger,
-        IServiceScopeFactory serviceScopeFactory
+        IMessageHandler<CreateCarMessage> createCarMessageHandler,
+        IMessageHandler<TaskToCompletedMessage> taskToCompleteHandler
         ) : BackgroundService
     {
         private readonly IMessageSubscriber _messageSubscriber = messageSubscriber;
         private readonly ILogger<MessagingBackgroundService> _logger = logger;
-        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
+        private readonly IMessageHandler<CreateCarMessage> _createCarMessageHandler = createCarMessageHandler;
+        private readonly IMessageHandler<TaskToCompletedMessage> _taskToCompleteHandler = taskToCompleteHandler;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -26,45 +25,18 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
 
             _messageSubscriber
                 .SubscribeMessage<CreateCarMessage>(
-                    "carTraderCarsQueue",
+                    "CarTraderCarsQueue",
                     "CarTrader.Cars",
-                    "cars",
-                    async (msg) => {
-                        _logger.LogInformation($"Recieved message {msg}");
-
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-                        var command = new StartProcessCommand()
-                        {
-                            CarId = msg.CarId,
-                            BussinesKey = msg.BussinesKey,
-                            UserId = msg.CreatedBy
-                        };
-
-                        await mediator.Send(command);
-                    }
+                    "Cars",
+                    _createCarMessageHandler.HandleAsync
                 );
 
             _messageSubscriber
                 .SubscribeMessage<TaskToCompletedMessage>(
-                    "carTraderCompleteTaskQueue",
+                    "CarTraderCompleteTaskQueue",
                     "CarTrader.Cars",
-                    "completeTask",
-                    async (msg) => {
-                        _logger.LogInformation($"Recieved message {msg}");
-
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-                        var command = new CompleteUserTaskCommand()
-                        {
-                            CarId = msg.CarId,
-                            CamundaActivityId = msg.CamundaActivityId
-                        };
-
-                        await mediator.Send(command);
-                    }
+                    "CompleteTask",
+                    _taskToCompleteHandler.HandleAsync
                 );
             return Task.CompletedTask;
         }

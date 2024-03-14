@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0ieolhg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0ieolhg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="Collaboration_0p97laf">
     <bpmn:participant id="Participant_1sb2rp6" name="Car Trader Workflow" processRef="Car-Trader-Workflow" />
   </bpmn:collaboration>
@@ -20,7 +20,9 @@
       <bpmn:lane id="Lane_05jhe4s" name="DIAGNOSTIC">
         <bpmn:flowNodeRef>Task_Diagnostic</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_0p34i8k" name="PARKING" />
+      <bpmn:lane id="Lane_0p34i8k" name="PARKING">
+        <bpmn:flowNodeRef>Task_Set_Parking_Place</bpmn:flowNodeRef>
+      </bpmn:lane>
       <bpmn:lane id="Lane_0e0huuz" name="PROCUREMENT">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Register_Car</bpmn:flowNodeRef>
@@ -51,16 +53,12 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0bk6e3k</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Task_Register_Car" name="Register Car" camunda:assignee="${createdBy}" camunda:candidateGroups="PROCUREMENT">
-      <bpmn:incoming>Flow_0bk6e3k</bpmn:incoming>
-      <bpmn:outgoing>Flow_18gpaql</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Task_Car_Selling" name="Car Selling" camunda:candidateGroups="SALES">
       <bpmn:incoming>Flow_1v60t2q</bpmn:incoming>
       <bpmn:outgoing>Flow_0ozijiq</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Task_Diagnostic" name="Diagnostic" camunda:candidateGroups="DIAGNOSTIC">
-      <bpmn:incoming>Flow_18gpaql</bpmn:incoming>
+      <bpmn:incoming>Flow_1wpim99</bpmn:incoming>
       <bpmn:outgoing>Flow_0inkoq7</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0inkoq7" sourceRef="Task_Diagnostic" targetRef="Gateway_0a7enkf" />
@@ -75,7 +73,17 @@
     <bpmn:sequenceFlow id="Flow_1v60t2q" sourceRef="Task_Prize_Setting" targetRef="Task_Car_Selling" />
     <bpmn:sequenceFlow id="Flow_0ozijiq" sourceRef="Task_Car_Selling" targetRef="Event_0j3iyxk" />
     <bpmn:sequenceFlow id="Flow_0bk6e3k" sourceRef="StartEvent_1" targetRef="Task_Register_Car" />
-    <bpmn:sequenceFlow id="Flow_18gpaql" sourceRef="Task_Register_Car" targetRef="Task_Diagnostic" />
+    <bpmn:sequenceFlow id="Flow_18gpaql" sourceRef="Task_Register_Car" targetRef="Task_Set_Parking_Place" />
+    <bpmn:userTask id="Task_Register_Car" name="Register Car" camunda:assignee="${createdBy}" camunda:candidateGroups="PROCUREMENT">
+      <bpmn:incoming>Flow_0bk6e3k</bpmn:incoming>
+      <bpmn:outgoing>Flow_18gpaql</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1wpim99" sourceRef="Task_Set_Parking_Place" targetRef="Task_Diagnostic" />
+    <bpmn:serviceTask id="Task_Set_Parking_Place" name="Set Parking Place" camunda:type="external" camunda:topic="Topic_Set_Parking_Place">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_18gpaql</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wpim99</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0p97laf">
@@ -107,55 +115,6 @@
         <dc:Bounds x="190" y="1300" width="1300" height="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_18gpaql_di" bpmnElement="Flow_18gpaql">
-        <di:waypoint x="430" y="190" />
-        <di:waypoint x="460" y="190" />
-        <di:waypoint x="460" y="650" />
-        <di:waypoint x="490" y="650" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bk6e3k_di" bpmnElement="Flow_0bk6e3k">
-        <di:waypoint x="278" y="190" />
-        <di:waypoint x="330" y="190" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ozijiq_di" bpmnElement="Flow_0ozijiq">
-        <di:waypoint x="1230" y="1410" />
-        <di:waypoint x="1362" y="1410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1v60t2q_di" bpmnElement="Flow_1v60t2q">
-        <di:waypoint x="1050" y="1410" />
-        <di:waypoint x="1130" y="1410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1fwdrtv_di" bpmnElement="Flow_1fwdrtv">
-        <di:waypoint x="870" y="1180" />
-        <di:waypoint x="910" y="1180" />
-        <di:waypoint x="910" y="1410" />
-        <di:waypoint x="950" y="1410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1abtmjd_di" bpmnElement="Flow_1abtmjd">
-        <di:waypoint x="820" y="940" />
-        <di:waypoint x="820" y="1140" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04hirgb_di" bpmnElement="Flow_04hirgb">
-        <di:waypoint x="695" y="900" />
-        <di:waypoint x="770" y="900" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="676" y="856" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0n6stov_di" bpmnElement="Flow_0n6stov">
-        <di:waypoint x="670" y="925" />
-        <di:waypoint x="670" y="1180" />
-        <di:waypoint x="770" y="1180" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="676" y="986" width="87" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0inkoq7_di" bpmnElement="Flow_0inkoq7">
-        <di:waypoint x="590" y="650" />
-        <di:waypoint x="623" y="650" />
-        <di:waypoint x="623" y="900" />
-        <di:waypoint x="645" y="900" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Gateway_0a7enkf_di" bpmnElement="Gateway_0a7enkf" isMarkerVisible="true">
         <dc:Bounds x="645" y="875" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -187,6 +146,63 @@
         <dc:Bounds x="490" y="610" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ckl94u_di" bpmnElement="Task_Set_Parking_Place">
+        <dc:Bounds x="410" y="390" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0inkoq7_di" bpmnElement="Flow_0inkoq7">
+        <di:waypoint x="590" y="650" />
+        <di:waypoint x="623" y="650" />
+        <di:waypoint x="623" y="900" />
+        <di:waypoint x="645" y="900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n6stov_di" bpmnElement="Flow_0n6stov">
+        <di:waypoint x="670" y="925" />
+        <di:waypoint x="670" y="1180" />
+        <di:waypoint x="770" y="1180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="986" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04hirgb_di" bpmnElement="Flow_04hirgb">
+        <di:waypoint x="695" y="900" />
+        <di:waypoint x="770" y="900" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="676" y="856" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1abtmjd_di" bpmnElement="Flow_1abtmjd">
+        <di:waypoint x="820" y="940" />
+        <di:waypoint x="820" y="1140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fwdrtv_di" bpmnElement="Flow_1fwdrtv">
+        <di:waypoint x="870" y="1180" />
+        <di:waypoint x="910" y="1180" />
+        <di:waypoint x="910" y="1410" />
+        <di:waypoint x="950" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v60t2q_di" bpmnElement="Flow_1v60t2q">
+        <di:waypoint x="1050" y="1410" />
+        <di:waypoint x="1130" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ozijiq_di" bpmnElement="Flow_0ozijiq">
+        <di:waypoint x="1230" y="1410" />
+        <di:waypoint x="1362" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bk6e3k_di" bpmnElement="Flow_0bk6e3k">
+        <di:waypoint x="278" y="190" />
+        <di:waypoint x="330" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18gpaql_di" bpmnElement="Flow_18gpaql">
+        <di:waypoint x="430" y="190" />
+        <di:waypoint x="460" y="190" />
+        <di:waypoint x="460" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wpim99_di" bpmnElement="Flow_1wpim99">
+        <di:waypoint x="460" y="470" />
+        <di:waypoint x="460" y="650" />
+        <di:waypoint x="490" y="650" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

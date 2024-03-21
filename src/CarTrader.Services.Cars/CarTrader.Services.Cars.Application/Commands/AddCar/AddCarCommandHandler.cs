@@ -37,6 +37,7 @@ namespace CarTrader.Services.Cars.Application.Commands.AddCar
             var message = new CreateCarMessage(car.Id, $"{car.Year}/{car.Number}", "john.doe");
             await _messagePublisher.PublishMessage("CarTrader.Cars", "Cars", message);
 
+            // return id
             return car.Id;
         }
     }

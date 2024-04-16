@@ -16,7 +16,7 @@ namespace CarTrader.Services.Workflow.Application.Handlers
 
         public async Task HandleAsync(CreateCarMessage msg)
         {
-            _logger.LogInformation($"Received message {msg}");
+           _logger.LogInformation($"Received {msg} CreateCarMessageHandler started");
 
             using var scope = _serviceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
@@ -29,6 +29,8 @@ namespace CarTrader.Services.Workflow.Application.Handlers
             };
 
             await mediator.Send(command);
+
+            _logger.LogInformation($"CreateCarMessageHandler finished work!");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace CarTrader.Services.Cars.Application.Commands.RegisterCar
 
             // publish message to RabbitMq
             var message = new CompleteTaskMessage(car.Id, "Task_Register_Car");
-            await _messagePublisher.PublishMessage("CarTrader.Cars", "CompleteTask", message);
+            await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "CompleteTask", message);
         }
     }
 }

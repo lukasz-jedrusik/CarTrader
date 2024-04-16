@@ -1,4 +1,4 @@
-namespace CarTrader.Services.Cars.Application.Interfaces.Services
+namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
 {
     public interface IMessagePublisher
     {

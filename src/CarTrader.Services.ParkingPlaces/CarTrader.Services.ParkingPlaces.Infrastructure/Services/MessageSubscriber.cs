@@ -1,12 +1,12 @@
 using System.Text;
 using System.Text.Json;
-using CarTrader.Services.Cars.Application.Interfaces.Services;
-using CarTrader.Services.Cars.Application.Messages;
+using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
+using CarTrader.Services.ParkingPlaces.Application.Messages;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace CarTrader.Services.Cars.Infrastructure.Services
+namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
 {
     public class MessageSubscriber : IMessageSubscriber
     {
@@ -43,7 +43,7 @@ namespace CarTrader.Services.Cars.Infrastructure.Services
                 _channel.BasicAck(ea.DeliveryTag, multiple: false);
             };
 
-            _channel.BasicConsume(queue, autoAck: true, consumer: consumer);
+            _channel.BasicConsume(queue, autoAck: false, consumer: consumer);
 
             return this;
         }

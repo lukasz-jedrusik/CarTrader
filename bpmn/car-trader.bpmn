@@ -21,7 +21,7 @@
         <bpmn:flowNodeRef>Task_Diagnostic</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0p34i8k" name="PARKING">
-        <bpmn:flowNodeRef>Task_Set_Parking_Place</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>External_Task_Set_Parking_Place</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0e0huuz" name="PROCUREMENT">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
@@ -73,13 +73,13 @@
     <bpmn:sequenceFlow id="Flow_1v60t2q" sourceRef="Task_Prize_Setting" targetRef="Task_Car_Selling" />
     <bpmn:sequenceFlow id="Flow_0ozijiq" sourceRef="Task_Car_Selling" targetRef="Event_0j3iyxk" />
     <bpmn:sequenceFlow id="Flow_0bk6e3k" sourceRef="StartEvent_1" targetRef="Task_Register_Car" />
-    <bpmn:sequenceFlow id="Flow_18gpaql" sourceRef="Task_Register_Car" targetRef="Task_Set_Parking_Place" />
+    <bpmn:sequenceFlow id="Flow_18gpaql" sourceRef="Task_Register_Car" targetRef="External_Task_Set_Parking_Place" />
     <bpmn:userTask id="Task_Register_Car" name="Register Car" camunda:assignee="${createdBy}" camunda:candidateGroups="PROCUREMENT">
       <bpmn:incoming>Flow_0bk6e3k</bpmn:incoming>
       <bpmn:outgoing>Flow_18gpaql</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1wpim99" sourceRef="Task_Set_Parking_Place" targetRef="Task_Diagnostic" />
-    <bpmn:serviceTask id="Task_Set_Parking_Place" name="Set Parking Place" camunda:type="external" camunda:topic="Topic_Set_Parking_Place">
+    <bpmn:sequenceFlow id="Flow_1wpim99" sourceRef="External_Task_Set_Parking_Place" targetRef="Task_Diagnostic" />
+    <bpmn:serviceTask id="External_Task_Set_Parking_Place" name="Set Parking Place" camunda:type="external" camunda:topic="Topic_Set_Parking_Place">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_18gpaql</bpmn:incoming>
       <bpmn:outgoing>Flow_1wpim99</bpmn:outgoing>
@@ -135,10 +135,6 @@
       <bpmndi:BPMNShape id="BPMNShape_0mwymm9" bpmnElement="StartEvent_1">
         <dc:Bounds x="242" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0fh79xf_di" bpmnElement="Task_Register_Car">
-        <dc:Bounds x="330" y="150" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0ns7eu3_di" bpmnElement="Task_Car_Selling">
         <dc:Bounds x="1130" y="1370" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -146,7 +142,11 @@
         <dc:Bounds x="490" y="610" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ckl94u_di" bpmnElement="Task_Set_Parking_Place">
+      <bpmndi:BPMNShape id="Activity_0fh79xf_di" bpmnElement="Task_Register_Car">
+        <dc:Bounds x="330" y="150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ckl94u_di" bpmnElement="External_Task_Set_Parking_Place">
         <dc:Bounds x="410" y="390" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

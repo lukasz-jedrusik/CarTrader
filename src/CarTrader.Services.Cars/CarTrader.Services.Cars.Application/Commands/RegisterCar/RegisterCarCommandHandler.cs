@@ -3,7 +3,6 @@ using CarTrader.Services.Cars.Application.Interfaces.Services;
 using CarTrader.Services.Cars.Application.Messages;
 using CarTrader.Services.Cars.Domain.Exceptions;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CarTrader.Services.Cars.Application.Commands.RegisterCar
 {

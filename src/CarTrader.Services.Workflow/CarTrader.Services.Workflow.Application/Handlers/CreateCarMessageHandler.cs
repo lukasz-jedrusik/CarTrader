@@ -16,11 +16,13 @@ namespace CarTrader.Services.Workflow.Application.Handlers
 
         public async Task HandleAsync(CreateCarMessage msg)
         {
-           _logger.LogInformation($"Received {msg} CreateCarMessageHandler started");
+            _logger.LogInformation($"Received {msg} CreateCarMessageHandler started");
 
+            // get access to mediatr
             using var scope = _serviceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
+            // create command
             var command = new StartProcessCommand()
             {
                 CarId = msg.CarId,
@@ -28,9 +30,10 @@ namespace CarTrader.Services.Workflow.Application.Handlers
                 UserId = msg.CreatedBy
             };
 
+            // call command
             await mediator.Send(command);
 
-            _logger.LogInformation($"CreateCarMessageHandler finished work!");
+            _logger.LogInformation("CreateCarMessageHandler finished work!");
         }
     }
 }

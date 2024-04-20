@@ -18,18 +18,21 @@ namespace CarTrader.Services.Workflow.Application.Handlers
         {
             _logger.LogInformation($"Received {msg} TaskToCompletedMessageHandler started");
 
+            // get access to mediatr
             using var scope = _serviceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
+            // create command
             var command = new CompleteUserTaskCommand()
             {
                 CarId = msg.CarId,
                 CamundaActivityId = msg.CamundaActivityId
             };
 
+            // call command
             await mediator.Send(command);
 
-            _logger.LogInformation($"TaskToCompletedMessageHandler finished work!");
+            _logger.LogInformation("TaskToCompletedMessageHandler finished work!");
         }
     }
 }

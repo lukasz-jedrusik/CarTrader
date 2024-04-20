@@ -1,3 +1,4 @@
+using CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Handlers;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
 using MediatR;
@@ -15,21 +16,23 @@ namespace CarTrader.Services.ParkingPlaces.Application.Handlers
 
         public async Task HandleAsync(ParkingPlaceSetMessage msg)
         {
-           _logger.LogInformation($"Received {msg} SetParkingPlaceMessageHandler started");
+            _logger.LogInformation($"Received {msg} SetParkingPlaceMessageHandler started");
 
+            // get access to mediatr
             using var scope = _serviceScopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            // var command = new StartProcessCommand()
-            // {
-            //     CarId = msg.CarId,
-            //     BussinesKey = msg.BussinesKey,
-            //     UserId = msg.CreatedBy
-            // };
+            // create command
+            var command = new SetParkingPlaceCommand()
+            {
+                CarId = msg.CarId,
+                BussinesKey = msg.BussinesKey,
+            };
 
-            // await mediator.Send(command);
+            // call command
+            await mediator.Send(command);
 
-            _logger.LogInformation($"SetParkingPlaceMessageHandler finished work!");
+            _logger.LogInformation("SetParkingPlaceMessageHandler finished work!");
         }
     }
 }

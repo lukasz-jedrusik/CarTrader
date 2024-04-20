@@ -16,10 +16,10 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
 
         public MessageSubscriber(IConfiguration configuration)
         {
+            _configuration = configuration;
             var factory = new ConnectionFactory { HostName = _configuration["RabbitMq:Hostname"] };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _configuration = configuration;
         }
 
         public IMessageSubscriber SubscribeMessage<TMessage>(

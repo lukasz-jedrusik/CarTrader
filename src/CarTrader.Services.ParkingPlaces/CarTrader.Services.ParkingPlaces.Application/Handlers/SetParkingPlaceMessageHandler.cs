@@ -16,6 +16,7 @@ namespace CarTrader.Services.ParkingPlaces.Application.Handlers
 
         public async Task HandleAsync(ParkingPlaceSetMessage msg)
         {
+            // logging info start
             _logger.LogInformation($"Received {msg} SetParkingPlaceMessageHandler started");
 
             // get access to mediatr
@@ -32,6 +33,7 @@ namespace CarTrader.Services.ParkingPlaces.Application.Handlers
             // call command
             await mediator.Send(command);
 
+            // logging info finish
             _logger.LogInformation("SetParkingPlaceMessageHandler finished work!");
         }
     }

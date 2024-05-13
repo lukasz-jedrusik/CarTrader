@@ -1,5 +1,6 @@
 using System.Text;
 using Camunda.Api.Client;
+using Camunda.Api.Client.ExternalTask;
 using Camunda.Api.Client.ProcessDefinition;
 using Camunda.Api.Client.ProcessInstance;
 using Camunda.Api.Client.UserTask;
@@ -58,6 +59,23 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
         {
             var completeTask = new CompleteTask();
             await _camunda.UserTasks[camundaTaskId].Complete(completeTask);
+        }
+
+        public async Task<List<ExternalTaskInfo>> GetCurrentExternalTasksAsync(string processId)
+        {
+            var groupTaskQuery = new ExternalTaskQuery
+            {
+                ProcessInstanceId = processId
+            };
+
+            var tasks = await _camunda.ExternalTasks.Query(groupTaskQuery).List();
+            return tasks;
+        }
+
+        public async Task CompleteExternalTaskAsync(string camundaTaskId)
+        {
+            var completeTask = new CompleteExternalTask();
+            await _camunda.ExternalTasks[camundaTaskId].Complete(completeTask);
         }
     }
 }

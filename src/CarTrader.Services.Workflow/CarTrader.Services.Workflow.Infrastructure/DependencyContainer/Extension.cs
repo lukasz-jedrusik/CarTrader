@@ -28,6 +28,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
             // Handlers
             services.AddSingleton<IMessageHandler<CreateCarMessage>, CreateCarMessageHandler>();
             services.AddSingleton<IMessageHandler<TaskToCompletedMessage>, TaskToCompletedMessageHandler>();
+            services.AddSingleton<IMessageHandler<ExternalTaskToCompletedMessage>, ExternalTaskToCompletedMessageHandler>();
 
             // HttpClients
             var retryPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode).RetryAsync(3);

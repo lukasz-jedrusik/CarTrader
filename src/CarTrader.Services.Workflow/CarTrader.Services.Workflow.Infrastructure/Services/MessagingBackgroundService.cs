@@ -10,13 +10,15 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
         IMessageSubscriber messageSubscriber,
         ILogger<MessagingBackgroundService> logger,
         IMessageHandler<CreateCarMessage> createCarMessageHandler,
-        IMessageHandler<TaskToCompletedMessage> taskToCompleteHandler
+        IMessageHandler<TaskToCompletedMessage> taskToCompleteHandler,
+        IMessageHandler<ExternalTaskToCompletedMessage> externalTaskToCompleteHandler
         ) : BackgroundService
     {
         private readonly IMessageSubscriber _messageSubscriber = messageSubscriber;
         private readonly ILogger<MessagingBackgroundService> _logger = logger;
         private readonly IMessageHandler<CreateCarMessage> _createCarMessageHandler = createCarMessageHandler;
         private readonly IMessageHandler<TaskToCompletedMessage> _taskToCompleteHandler = taskToCompleteHandler;
+        private readonly IMessageHandler<ExternalTaskToCompletedMessage> _externalTaskToCompleteHandler = externalTaskToCompleteHandler;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -37,6 +39,14 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
                     "CarTrader.Cars",
                     "CompleteTask",
                     _taskToCompleteHandler.HandleAsync
+                );
+
+            _messageSubscriber
+                .SubscribeMessage<ExternalTaskToCompletedMessage>(
+                    "CarTraderCompleteExternalTaskQueue",
+                    "CarTrader.Cars",
+                    "CompleteExternalTask",
+                    _externalTaskToCompleteHandler.HandleAsync
                 );
 
             return Task.CompletedTask;

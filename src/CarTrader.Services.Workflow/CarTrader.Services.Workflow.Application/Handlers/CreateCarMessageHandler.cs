@@ -16,6 +16,7 @@ namespace CarTrader.Services.Workflow.Application.Handlers
 
         public async Task HandleAsync(CreateCarMessage msg)
         {
+            // logging info start
             _logger.LogInformation($"Received {msg} CreateCarMessageHandler started");
 
             // get access to mediatr
@@ -33,6 +34,7 @@ namespace CarTrader.Services.Workflow.Application.Handlers
             // call command
             await mediator.Send(command);
 
+            // logging info finish
             _logger.LogInformation("CreateCarMessageHandler finished work!");
         }
     }

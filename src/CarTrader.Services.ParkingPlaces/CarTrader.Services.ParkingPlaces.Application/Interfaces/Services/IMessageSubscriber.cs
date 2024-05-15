@@ -9,5 +9,9 @@ namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
             string exchange,
             string routingKey,
             Func<TMessage, Task> handle) where TMessage : class, IMessage;
+
+        Task RespondToRequestAsync<TRequest, TResponse>(
+            Func<TRequest, Task<TResponse>> handleRequest,
+            string queue);
     }
 }

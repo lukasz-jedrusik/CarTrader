@@ -47,5 +47,38 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
 
             return this;
         }
+
+        public async Task RespondToRequestAsync<TRequest, TResponse>(
+            Func<TRequest, Task<TResponse>> handleRequest,
+            string queue)
+        {
+            using var channel = _connection.CreateModel();
+            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
+
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += async (model, ea) =>
+            {
+                var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var request = JsonSerializer.Deserialize<TRequest>(requestJson);
+                var response = await handleRequest(request);
+                var responseJson = JsonSerializer.Serialize(response);
+
+                var props = channel.CreateBasicProperties();
+                props.CorrelationId = ea.BasicProperties.CorrelationId;
+
+                channel.BasicPublish(
+                    exchange: "",
+                    routingKey: ea.BasicProperties.ReplyTo,
+                    basicProperties: props,
+                    body: Encoding.UTF8.GetBytes(responseJson)
+                );
+
+                channel.BasicAck(ea.DeliveryTag, false);
+            };
+
+            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+
+            await Task.CompletedTask;
+        }
     }
 }

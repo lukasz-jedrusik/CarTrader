@@ -2,7 +2,6 @@ using System.Text;
 using System.Text.Json;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Messages;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
-using CarTrader.Services.ParkingPlaces.Application.Messages;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -50,10 +49,11 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
         }
 
         public IMessageSubscriber RespondToRequest<TRequest, TResponse>(
-            Func<TRequest, Task<TResponse>> handleRequest,
             string queue,
             string exchange,
-            string routingKey)
+            string routingKey,
+            Func<TRequest, Task<TResponse>> handleRequest
+            )
             where TRequest : class, IMessageRequest
             where TResponse : class, IMessageResponse
         {
@@ -90,7 +90,5 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
 
             return this;
         }
-
-
     }
 }

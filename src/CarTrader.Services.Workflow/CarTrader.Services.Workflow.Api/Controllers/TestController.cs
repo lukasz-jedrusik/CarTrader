@@ -20,7 +20,7 @@ namespace CarTrader.Services.Workflow.Api.Controllers
         {
             // Wywołanie metody SendRequestAsync
             var response = await _messagePublisher.SendRequestAsync<SetParkingPlaceRequest, SetParkingPlaceResponse>(
-                queue: "CarTraderSetParkingPlaceQueueResponses",
+                queue: "CarTraderSetParkingPlaceQueueRequests",
                 exchange: "CarTrader.Cars",
                 routingKey: "SetParkingPlaceRequestResponse",
                 request: new SetParkingPlaceRequest(Guid.NewGuid(), "BK-1"),

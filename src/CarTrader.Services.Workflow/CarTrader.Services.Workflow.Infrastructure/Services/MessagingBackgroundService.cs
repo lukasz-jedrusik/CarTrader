@@ -41,13 +41,13 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
                     _taskToCompleteHandler.HandleAsync
                 );
 
-            _messageSubscriber
-                .SubscribeMessage<ExternalTaskToCompletedMessage>(
-                    "CarTraderCompleteExternalTaskQueue",
-                    "CarTrader.Cars",
-                    "CompleteExternalTask",
-                    _externalTaskToCompleteHandler.HandleAsync
-                );
+            // _messageSubscriber
+            //     .SubscribeMessage<ExternalTaskToCompletedMessage>(
+            //         "CarTraderCompleteExternalTaskQueue",
+            //         "CarTrader.Cars",
+            //         "CompleteExternalTask",
+            //         _externalTaskToCompleteHandler.HandleAsync
+            //     );
 
             return Task.CompletedTask;
         }

@@ -12,10 +12,10 @@ namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
             Func<TMessage, Task> handle) where TMessage : class, IMessage;
 
         IMessageSubscriber RespondToRequest<TRequest, TResponse>(
-            Func<TRequest, Task<TResponse>> handleRequest,
             string queue,
             string exchange,
-            string routingKey)
+            string routingKey,
+            Func<TRequest, Task<TResponse>> handleRequest)
             where TRequest : class, IMessageRequest
             where TResponse : class, IMessageResponse;
     }

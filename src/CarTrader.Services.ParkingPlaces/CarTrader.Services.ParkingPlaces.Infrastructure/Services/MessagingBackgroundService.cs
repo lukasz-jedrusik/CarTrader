@@ -23,20 +23,20 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
             _logger.LogInformation(
                 $"Background Messaging service '{nameof(MessagingBackgroundService)}' is running");
 
-            _messageSubscriber
-                .SubscribeMessage<ParkingPlaceSetMessage>(
-                    "CarTraderSetParkingPlaceQueue",
-                    "CarTrader.Cars",
-                    "SetParkingPlace",
-                    _parkingPlaceSetMessageHandler.HandleAsync
-                );
+            // _messageSubscriber
+            //     .SubscribeMessage<ParkingPlaceSetMessage>(
+            //         "CarTraderSetParkingPlaceQueue",
+            //         "CarTrader.Cars",
+            //         "SetParkingPlace",
+            //         _parkingPlaceSetMessageHandler.HandleAsync
+            //     );
 
             _messageSubscriber
                 .RespondToRequest<SetParkingPlaceRequest, SetParkingPlaceResponse>(
-                    handleRequest: HandleRequest,
                     "CarTraderSetParkingPlaceQueueRequests",
                     "CarTrader.Cars",
-                    "SetParkingPlaceRequestResponse"
+                    "SetParkingPlaceRequestResponse",
+                    handleRequest: HandleRequest
                 );
 
             return Task.CompletedTask;

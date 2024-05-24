@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using CarTrader.Services.ParkingPlaces.Application.Interfaces.Messages;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
 using Microsoft.Extensions.Configuration;
@@ -48,14 +49,19 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
             return this;
         }
 
-        public async Task RespondToRequestAsync<TRequest, TResponse>(
+        public IMessageSubscriber RespondToRequest<TRequest, TResponse>(
             Func<TRequest, Task<TResponse>> handleRequest,
-            string queue)
+            string queue,
+            string exchange,
+            string routingKey)
+            where TRequest : class, IMessageRequest
+            where TResponse : class, IMessageResponse
         {
-            using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
+            _channel.ExchangeDeclare(exchange, "topic", durable: true, autoDelete: false, null);
+            _channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
+            _channel.QueueBind(queue, exchange, routingKey);
 
-            var consumer = new EventingBasicConsumer(channel);
+            var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, ea) =>
             {
                 var requestJson = Encoding.UTF8.GetString(ea.Body.ToArray());
@@ -63,22 +69,28 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
                 var response = await handleRequest(request);
                 var responseJson = JsonSerializer.Serialize(response);
 
-                var props = channel.CreateBasicProperties();
+                var props = _channel.CreateBasicProperties();
                 props.CorrelationId = ea.BasicProperties.CorrelationId;
 
-                channel.BasicPublish(
+                Console.WriteLine($"[RespondToRequest] Received request with CorrelationId: {ea.BasicProperties.CorrelationId}");
+                Console.WriteLine($"[RespondToRequest] Replying to queue: {ea.BasicProperties.ReplyTo}");
+
+                _channel.BasicPublish(
                     exchange: "",
                     routingKey: ea.BasicProperties.ReplyTo,
                     basicProperties: props,
                     body: Encoding.UTF8.GetBytes(responseJson)
                 );
 
-                channel.BasicAck(ea.DeliveryTag, false);
+                _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+            Console.WriteLine($"[RespondToRequest] Subscribing to queue: {queue}");
+            _channel.BasicConsume(queue, autoAck: false, consumer: consumer);
 
-            await Task.CompletedTask;
+            return this;
         }
+
+
     }
 }

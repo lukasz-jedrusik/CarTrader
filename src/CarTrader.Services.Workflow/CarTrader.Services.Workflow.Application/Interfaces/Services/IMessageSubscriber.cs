@@ -1,3 +1,4 @@
+using CarTrader.Services.Workflow.Application.Interfaces.Messages;
 using CarTrader.Services.Workflow.Application.Messages;
 
 namespace CarTrader.Services.Workflow.Application.Interfaces.Services

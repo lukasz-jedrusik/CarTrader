@@ -24,12 +24,16 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
         }
 
         public async Task<TResponse> SendRequestAsync<TRequest, TResponse>(
+            string queue,
             string exchange,
             string routingKey,
             TRequest request,
             Func<TResponse, Task> handleResponse)
         {
             using var channel = _connection.CreateModel();
+
+            channel.ExchangeDeclare(exchange, "topic", true, false);
+            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
 
             var jsonRequest = JsonSerializer.Serialize(request);
             var body = Encoding.UTF8.GetBytes(jsonRequest);
@@ -46,19 +50,24 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (model, ea) =>
             {
+                Console.WriteLine($"[Consumer] Received message with CorrelationId: {ea.BasicProperties.CorrelationId}");
                 if (ea.BasicProperties.CorrelationId != correlationId)
                 {
+                    Console.WriteLine($"[Consumer] CorrelationId mismatch: {ea.BasicProperties.CorrelationId} != {correlationId}");
                     return;
                 }
 
+                Console.WriteLine("[Consumer] Processing response");
                 var jsonResponse = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var response = JsonSerializer.Deserialize<TResponse>(jsonResponse);
                 await handleResponse(response);
                 responseTaskCompletionSource.SetResult(response);
             };
 
+            Console.WriteLine($"[SendRequestAsync] Subscribing to reply queue: {replyQueueName}");
             channel.BasicConsume(queue: replyQueueName, autoAck: true, consumer: consumer);
 
+            Console.WriteLine($"[SendRequestAsync] Publishing request with CorrelationId: {correlationId}");
             channel.BasicPublish(
                 exchange: exchange,
                 routingKey: routingKey,
@@ -66,7 +75,14 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
                 body: body
             );
 
+            // Additional logs for debug purpose
+            Console.WriteLine($"[SendRequestAsync] Waiting for response on queue: {replyQueueName} with CorrelationId: {correlationId}");
+
             return await responseTaskCompletionSource.Task;
         }
+
+
+
+
     }
 }

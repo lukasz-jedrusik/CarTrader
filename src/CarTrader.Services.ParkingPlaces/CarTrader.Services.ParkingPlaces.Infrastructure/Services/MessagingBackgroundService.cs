@@ -1,6 +1,8 @@
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Handlers;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
+using CarTrader.Services.ParkingPlaces.Application.Requests;
+using CarTrader.Services.ParkingPlaces.Application.Responses;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -29,6 +31,14 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
                     _parkingPlaceSetMessageHandler.HandleAsync
                 );
 
+            _messageSubscriber
+                .RespondToRequest<SetParkingPlaceRequest, SetParkingPlaceResponse>(
+                    handleRequest: HandleRequest,
+                    "CarTraderSetParkingPlaceQueueRequests",
+                    "CarTrader.Cars",
+                    "SetParkingPlaceRequestResponse"
+                );
+
             return Task.CompletedTask;
         }
 
@@ -38,6 +48,16 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
                 $"Background Messaging service '{nameof(MessagingBackgroundService)}' is stopping.");
 
             await base.StopAsync(cancellationToken);
+        }
+
+        private async Task<SetParkingPlaceResponse> HandleRequest(SetParkingPlaceRequest request)
+        {
+            // Przetwarzanie otrzymanego żądania
+            Console.WriteLine("Received request: " + request);
+
+            // Generowanie odpowiedzi
+            var response = new SetParkingPlaceResponse(request.CarId, request.BussinesKey + "-RESPONSE");
+            return response;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
+using CarTrader.Services.Workflow.Application.Interfaces.Messages;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
-using CarTrader.Services.Workflow.Application.Messages;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

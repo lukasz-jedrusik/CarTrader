@@ -1,3 +1,4 @@
+using CarTrader.Services.ParkingPlaces.Application.Interfaces.Messages;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
 
 namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
@@ -10,8 +11,12 @@ namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
             string routingKey,
             Func<TMessage, Task> handle) where TMessage : class, IMessage;
 
-        Task RespondToRequestAsync<TRequest, TResponse>(
+        IMessageSubscriber RespondToRequest<TRequest, TResponse>(
             Func<TRequest, Task<TResponse>> handleRequest,
-            string queue);
+            string queue,
+            string exchange,
+            string routingKey)
+            where TRequest : class, IMessageRequest
+            where TResponse : class, IMessageResponse;
     }
 }

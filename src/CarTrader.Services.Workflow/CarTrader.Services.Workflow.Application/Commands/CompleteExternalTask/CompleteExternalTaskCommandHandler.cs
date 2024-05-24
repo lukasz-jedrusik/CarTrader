@@ -33,6 +33,4 @@ namespace CarTrader.Services.Workflow.Application.Commands.CompleteExternalTask
             await _camunda.CompleteTaskAsync(taskToComplete.Id);
         }
     }
-
-    
 }

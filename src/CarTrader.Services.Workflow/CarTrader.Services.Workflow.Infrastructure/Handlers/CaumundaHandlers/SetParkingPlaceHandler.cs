@@ -54,11 +54,5 @@ namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
                 }
             };
         }
-
-        private async Task HandleResponseAsync(SetParkingPlaceResponse response)
-        {
-            Console.WriteLine("Received response: " + response);
-            await Task.CompletedTask;
-        }
     }
 }

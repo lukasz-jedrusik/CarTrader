@@ -9,7 +9,6 @@ namespace CarTrader.Services.Cars.Infrastructure.Extensions.MediatR
     {
         public static IServiceCollection AddMediatR(this IServiceCollection services)
         {
-            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddCarCommand).Assembly));
             return services;
         }

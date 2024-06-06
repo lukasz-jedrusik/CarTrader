@@ -16,11 +16,11 @@ namespace CarTrader.Services.Workflow.Application.Commands.CompleteUserTask
             // Get relation between process and car from db
             var process = await _repository.GetByIdAsync(request.CarId);
 
-            // Get current tasks from camunda
-            var tasks = await _camunda.GetCurrentExternalTasksAsync(process.CamundaProcessId);
+            // Get current tasks from camunda GetCurrentTasksAsync
+            var tasks = await _camunda.GetCurrentTasksAsync(process.CamundaProcessId);
 
             // Find current task with AcitivityId from request
-            var taskToComplete = tasks.Find(x => x.ActivityId == request.CamundaActivityId);
+            var taskToComplete = tasks.Find(x => x.TaskDefinitionKey == request.CamundaActivityId);
 
             // return void if task doesn't exist
             if (taskToComplete == null)

@@ -72,8 +72,8 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
                 var props = _channel.CreateBasicProperties();
                 props.CorrelationId = ea.BasicProperties.CorrelationId;
 
-                Console.WriteLine($"[RespondToRequest] Received request with CorrelationId: {ea.BasicProperties.CorrelationId}");
-                Console.WriteLine($"[RespondToRequest] Replying to queue: {ea.BasicProperties.ReplyTo}");
+                // Console.WriteLine($"[RespondToRequest] Received request with CorrelationId: {ea.BasicProperties.CorrelationId}");
+                // Console.WriteLine($"[RespondToRequest] Replying to queue: {ea.BasicProperties.ReplyTo}");
 
                 _channel.BasicPublish(
                     exchange: "",
@@ -85,7 +85,7 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Services
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            Console.WriteLine($"[RespondToRequest] Subscribing to queue: {queue}");
+            // Console.WriteLine($"[RespondToRequest] Subscribing to queue: {queue}");
             _channel.BasicConsume(queue, autoAck: false, consumer: consumer);
 
             return this;

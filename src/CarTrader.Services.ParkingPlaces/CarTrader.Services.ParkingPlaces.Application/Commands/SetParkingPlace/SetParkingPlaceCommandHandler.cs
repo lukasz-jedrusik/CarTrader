@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace
 {
-    public class SetParkingPlaceCommandHandler : IRequestHandler<SetParkingPlaceCommand>
+    public class SetParkingPlaceCommandHandler : IRequestHandler<SetParkingPlaceCommand, CarParkingPlace>
     {
         private readonly ICarParkingPlaceRepository _repository;
         private readonly IConfiguration _configuration;
@@ -30,7 +30,7 @@ namespace CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace
             sectors = _configuration.GetSection("ParkingPlacesConfiguration:Sectors").Get<List<string>>();
         }
 
-        public async Task Handle(SetParkingPlaceCommand request, CancellationToken cancellationToken)
+        public async Task<CarParkingPlace> Handle(SetParkingPlaceCommand request, CancellationToken cancellationToken)
         {
             // get occupated spots from db
             var carsSpots = await _repository.GetAllAsync();
@@ -74,6 +74,8 @@ namespace CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace
             {
                 await _repository.AddAsync(place);
             }
+
+            return place;
 
             // create message
             var message = new CompleteExternalTaskMessage(request.CarId, "External_Task_Set_Parking_Place");

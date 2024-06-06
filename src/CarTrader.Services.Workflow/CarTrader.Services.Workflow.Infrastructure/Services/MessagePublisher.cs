@@ -50,24 +50,24 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (model, ea) =>
             {
-                Console.WriteLine($"[Consumer] Received message with CorrelationId: {ea.BasicProperties.CorrelationId}");
+                // Console.WriteLine($"[Consumer] Received message with CorrelationId: {ea.BasicProperties.CorrelationId}");
                 if (ea.BasicProperties.CorrelationId != correlationId)
                 {
-                    Console.WriteLine($"[Consumer] CorrelationId mismatch: {ea.BasicProperties.CorrelationId} != {correlationId}");
+                    // Console.WriteLine($"[Consumer] CorrelationId mismatch: {ea.BasicProperties.CorrelationId} != {correlationId}");
                     return;
                 }
 
-                Console.WriteLine("[Consumer] Processing response");
+                // Console.WriteLine("[Consumer] Processing response");
                 var jsonResponse = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var response = JsonSerializer.Deserialize<TResponse>(jsonResponse);
                 await handleResponse(response);
                 responseTaskCompletionSource.SetResult(response);
             };
 
-            Console.WriteLine($"[SendRequestAsync] Subscribing to reply queue: {replyQueueName}");
+            // Console.WriteLine($"[SendRequestAsync] Subscribing to reply queue: {replyQueueName}");
             channel.BasicConsume(queue: replyQueueName, autoAck: true, consumer: consumer);
 
-            Console.WriteLine($"[SendRequestAsync] Publishing request with CorrelationId: {correlationId}");
+            // Console.WriteLine($"[SendRequestAsync] Publishing request with CorrelationId: {correlationId}");
             channel.BasicPublish(
                 exchange: exchange,
                 routingKey: routingKey,
@@ -76,13 +76,9 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
             );
 
             // Additional logs for debug purpose
-            Console.WriteLine($"[SendRequestAsync] Waiting for response on queue: {replyQueueName} with CorrelationId: {correlationId}");
+            // Console.WriteLine($"[SendRequestAsync] Waiting for response on queue: {replyQueueName} with CorrelationId: {correlationId}");
 
             return await responseTaskCompletionSource.Task;
         }
-
-
-
-
     }
 }

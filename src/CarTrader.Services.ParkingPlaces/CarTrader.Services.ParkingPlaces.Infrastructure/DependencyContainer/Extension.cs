@@ -7,6 +7,8 @@ using CarTrader.Services.ParkingPlaces.Infrastructure.Services;
 using CarTrader.Services.ParkingPlaces.Application.Handlers;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Handlers;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
+using CarTrader.Services.ParkingPlaces.Application.Responses;
+using CarTrader.Services.ParkingPlaces.Application.Requests;
 
 namespace CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer
 {
@@ -23,7 +25,10 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer
             services.AddHostedService<MessagingBackgroundService>();
 
             // Handlers
-            services.AddSingleton<IMessageHandler<ParkingPlaceSetMessage>, SetParkingPlaceMessageHandler>();
+            // services.AddSingleton<IMessageHandler<ParkingPlaceSetMessage>, SetParkingPlaceMessageHandler>();
+            services.AddSingleton<
+                IRequestResponseHandler<SetParkingPlaceRequest, SetParkingPlaceResponse>,
+                SetParkingPlaceMessageHandler>();
 
             // Queue
             services.AddHostedService<QueuedHostedService>();

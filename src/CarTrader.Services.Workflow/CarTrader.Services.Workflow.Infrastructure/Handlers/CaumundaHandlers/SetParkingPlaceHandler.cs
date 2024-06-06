@@ -2,6 +2,8 @@ using Camunda.Worker;
 using Camunda.Worker.Variables;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using CarTrader.Services.Workflow.Application.Messages;
+using CarTrader.Services.Workflow.Application.Requests;
+using CarTrader.Services.Workflow.Application.Responses;
 using Microsoft.Extensions.Logging;
 
 namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
@@ -30,14 +32,33 @@ namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
             var message = new SetParkingPlaceMessage(Guid.Parse(carId), bussinesKey);
 
             // publish message to RabbitMq
-            await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "SetParkingPlace", message);
+            var response = await _messagePublisher.SendRequestAsync<SetParkingPlaceRequest, SetParkingPlaceResponse>(
+                queue: "CarTraderSetParkingPlaceQueueRequests",
+                exchange: "CarTrader.Cars",
+                routingKey: "SetParkingPlaceRequestResponse",
+                request: new SetParkingPlaceRequest(Guid.Parse(carId), bussinesKey),
+                handleResponse: _ => Task.CompletedTask
+            );
 
              // logging info finish
             _logger.LogInformation("External_Task_Set_Parking_Place finished work!");
 
-            return null;
+            // return null;
 
-            return new CompleteResult();
+            // return complete task to camunda
+            return new CompleteResult
+            {
+                Variables = new Dictionary<string, VariableBase>
+                {
+                    ["parkingPlace"] = new StringVariable(response.Spot)
+                }
+            };
+        }
+
+        private async Task HandleResponseAsync(SetParkingPlaceResponse response)
+        {
+            Console.WriteLine("Received response: " + response);
+            await Task.CompletedTask;
         }
     }
 }

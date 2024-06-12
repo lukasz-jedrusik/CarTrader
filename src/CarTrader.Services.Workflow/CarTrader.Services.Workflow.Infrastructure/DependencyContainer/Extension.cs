@@ -6,9 +6,6 @@ using Polly;
 using Microsoft.Extensions.Configuration;
 using CarTrader.Services.Workflow.Application.Interfaces.Repositories;
 using CarTrader.Services.Workflow.Infrastructure.Repositories;
-using CarTrader.Services.Workflow.Application.Interfaces.Handlers;
-using CarTrader.Services.Workflow.Application.Messages;
-using CarTrader.Services.Workflow.Application.Handlers;
 
 namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
 {
@@ -25,9 +22,6 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
             services.AddSingleton<ICamundaService, CamundaService>();
             services.AddHostedService<CreateCarMsgSubscriberService>();
             services.AddHostedService<RegisterCarMsgSubscriberService>();
-
-            // Handlers
-            services.AddSingleton<IMessageHandler<ExternalTaskToCompletedMessage>, ExternalTaskToCompletedMessageHandler>();
 
             // HttpClients
             var retryPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode).RetryAsync(3);

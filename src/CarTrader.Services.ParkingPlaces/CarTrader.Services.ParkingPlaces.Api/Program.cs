@@ -5,6 +5,7 @@ using CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer;
 using CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.EfCore;
 using CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.KeycloakAuth;
 using CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.MediatR;
+using CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.RabbitMq;
 using CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.Swagger;
 using NLog.Web;
 
@@ -30,6 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddSwagger()
         .AddKeycloakAuthorization(builder.Configuration)
         .AddMediatR()
+        .AddRabbitMq(builder.Configuration)
         .AddApplication();
 
     builder.Services.AddHealthChecks();

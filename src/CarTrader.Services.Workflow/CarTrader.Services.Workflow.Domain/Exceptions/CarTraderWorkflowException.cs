@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace CarTrader.Services.Workflow.Domain.Exceptions
 {
     public abstract class CarTraderWorkflowException : Exception

@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using CarTrader.Services.Cars.Application.Interfaces.Services;
 using CarTrader.Services.Cars.Application.Messages;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -11,10 +12,12 @@ namespace CarTrader.Services.Cars.Infrastructure.Services
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly IConfiguration _configuration;
 
-        public MessageSubscriber()
+        public MessageSubscriber(IConfiguration configuration)
         {
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            _configuration = configuration;
+            var factory = new ConnectionFactory { HostName = _configuration["RabbitMq:Hostname"] };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
         }

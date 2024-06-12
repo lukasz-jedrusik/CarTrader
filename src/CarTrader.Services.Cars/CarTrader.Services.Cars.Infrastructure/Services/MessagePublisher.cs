@@ -9,7 +9,7 @@ namespace CarTrader.Services.Cars.Infrastructure.Services
     {
         private readonly IConnection _connection = connection;
 
-        public async Task PublishMessage<TMessage>(string exchange, string routingKey, TMessage message)
+        public async Task PublishMessageAsync<TMessage>(string exchange, string routingKey, TMessage message)
         {
             var json = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(json);

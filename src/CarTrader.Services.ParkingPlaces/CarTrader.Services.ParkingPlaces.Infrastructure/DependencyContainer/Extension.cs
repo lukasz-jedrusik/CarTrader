@@ -1,6 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using CarTrader.Services.ParkingPlaces.Application.Services;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
+using CarTrader.Services.ParkingPlaces.Application.Interfaces.Repositories;
+using CarTrader.Services.ParkingPlaces.Infrastructure.Repositories;
+using CarTrader.Services.ParkingPlaces.Infrastructure.Services;
 
 namespace CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer
 {
@@ -9,8 +12,12 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             // Repositories
+            services.AddScoped<ICarParkingPlaceRepository, CarParkingPlaceRepository>();
 
             // Services
+            services.AddSingleton<IMessagePublisher, MessagePublisher>();
+            services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
+            services.AddHostedService<SetParkingPlaceMsgSubscriberService>();
 
             // Queue
             services.AddHostedService<QueuedHostedService>();

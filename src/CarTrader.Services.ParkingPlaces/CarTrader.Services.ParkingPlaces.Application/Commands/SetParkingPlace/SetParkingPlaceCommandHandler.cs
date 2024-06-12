@@ -12,20 +12,17 @@ namespace CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace
     {
         private readonly ICarParkingPlaceRepository _repository;
         private readonly IConfiguration _configuration;
-        private readonly IMessagePublisher _messagePublisher;
         private readonly List<string> sectors;
         private readonly int maxSpacesPerSector;
         private readonly Random random = new();
 
         public SetParkingPlaceCommandHandler(
             ICarParkingPlaceRepository repository,
-            IConfiguration configuration,
-            IMessagePublisher messagePublisher
+            IConfiguration configuration
             )
         {
             _repository = repository;
             _configuration = configuration;
-            _messagePublisher = messagePublisher;
             maxSpacesPerSector = _configuration.GetValue<int>("ParkingPlacesConfiguration:PlaceInSector");
             sectors = _configuration.GetSection("ParkingPlacesConfiguration:Sectors").Get<List<string>>();
         }
@@ -75,13 +72,8 @@ namespace CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace
                 await _repository.AddAsync(place);
             }
 
+            // return spot
             return place;
-
-            // create message
-            var message = new CompleteExternalTaskMessage(request.CarId, "External_Task_Set_Parking_Place");
-
-            // publish message to RabbitMq
-            await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "CompleteExternalTask", message);
         }
     }
 }

@@ -23,11 +23,10 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
             services.AddSingleton<IMessagePublisher, MessagePublisher>();
             services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
             services.AddSingleton<ICamundaService, CamundaService>();
-            services.AddHostedService<MessagingBackgroundService>();
+            services.AddHostedService<CreateCarMsgSubscriberService>();
+            services.AddHostedService<RegisterCarMsgSubscriberService>();
 
             // Handlers
-            services.AddSingleton<IMessageHandler<CreateCarMessage>, CreateCarMessageHandler>();
-            services.AddSingleton<IMessageHandler<TaskToCompletedMessage>, TaskToCompletedMessageHandler>();
             services.AddSingleton<IMessageHandler<ExternalTaskToCompletedMessage>, ExternalTaskToCompletedMessageHandler>();
 
             // HttpClients

@@ -11,58 +11,67 @@ using CarTrader.Services.Cars.Infrastructure.Extensions.RabbitMq;
 using CarTrader.Services.Cars.Infrastructure.Extensions.Swagger;
 using NLog.Web;
 
+// Create builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-{
-    builder.Services
-        .AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true);
+// Add controllers to services
+builder.Services
+    .AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true);
 
-    builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
-        );
+// Specify json options
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
+    );
 
-    builder.Logging.ClearProviders();
-    builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-    builder.Logging.AddConsole();
-    builder.Host.UseNLog(new NLogAspNetCoreOptions() { RemoveLoggerFactoryFilter = false });
+// Add Nlog
+builder.Logging.ClearProviders();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddConsole();
+builder.Host.UseNLog(new NLogAspNetCoreOptions() { RemoveLoggerFactoryFilter = false });
 
-    builder.Services
-        .AddCors()
-        .AddAutoMapper(typeof(AutoMapperProfiles))
-        .AddEfCore(builder.Configuration)
-        .AddEndpointsApiExplorer()
-        .AddSwagger()
-        .AddKeycloakAuthorization(builder.Configuration)
-        .AddFluentValidation()
-        .AddMediatR()
-        .AddRabbitMq(builder.Configuration)
-        .AddApplication()
-        ;
+// Add services
+builder.Services
+    .AddCors()
+    .AddAutoMapper(typeof(AutoMapperProfiles))
+    .AddEfCore(builder.Configuration)
+    .AddEndpointsApiExplorer()
+    .AddSwagger()
+    .AddKeycloakAuthorization(builder.Configuration)
+    .AddFluentValidation()
+    .AddMediatR()
+    .AddRabbitMq(builder.Configuration)
+    .AddApplication();
 
-    builder.Services.AddHealthChecks();
-}
+// Add healtchecks endpoints
+builder.Services.AddHealthChecks();
 
+// Create app
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
 {
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
-
-    app.UseCors()
-        .UseMiddleware<ErrorHandlerMiddleware>()
-        .UseHttpsRedirection()
-        .UseAuthorization();
-
-    app.MapControllers();
-
-    app.MapHealthChecks("/health");
-
-    app.AddCarsEndpoints();
-
-    app.Run();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+// Use Cors, Middleware, https redirection, authorization in pipieline
+app.UseCors()
+    .UseMiddleware<ErrorHandlerMiddleware>()
+    .UseHttpsRedirection()
+    .UseAuthorization();
+
+// Use controllers in pipieline
+app.MapControllers();
+
+// Use auto migrations applying
+app.ApplyMigrations();
+
+// Use healtheckecks in pipeline
+app.MapHealthChecks("/health");
+
+// Use app endpoints    
+app.AddCarsEndpoints();
+
+// Run app
+await app.RunAsync();

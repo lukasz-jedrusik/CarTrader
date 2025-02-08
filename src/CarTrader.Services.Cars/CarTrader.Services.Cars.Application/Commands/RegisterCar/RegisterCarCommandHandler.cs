@@ -19,10 +19,10 @@ namespace CarTrader.Services.Cars.Application.Commands.RegisterCar
             // Get car from repository
             var car = await _repository.GetByIdAsync(request.CarId) ?? throw new CarNotFoundException(request.CarId);
 
-            // create message 
+            // Create message 
             var message = new CompleteTaskMessage(car.Id);
 
-            // publish message to RabbitMq
+            // Publish message to RabbitMq
             await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "RegisterCar", message);
         }
     }

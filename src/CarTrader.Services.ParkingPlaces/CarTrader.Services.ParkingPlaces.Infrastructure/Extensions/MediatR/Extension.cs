@@ -1,4 +1,3 @@
-using MediatR;
 using CarTrader.Services.ParkingPlaces.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 

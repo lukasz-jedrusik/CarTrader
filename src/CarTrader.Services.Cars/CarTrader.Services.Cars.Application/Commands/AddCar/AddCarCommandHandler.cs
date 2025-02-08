@@ -18,26 +18,26 @@ namespace CarTrader.Services.Cars.Application.Commands.AddCar
 
         public async Task<Guid> Handle(AddCarCommand request, CancellationToken cancellationToken)
         {
-            // validate request
-            _validator.ValidateAndThrow(request);
+            // Validate request
+            await _validator.ValidateAndThrowAsync(request, cancellationToken);
 
-            // assign request car to new variable
+            // Assign request car to new variable
             var car = request.Car;
 
-            // set properties
+            // Set properties
             car.Id = Guid.NewGuid();
             car.CreateDate = DateTime.UtcNow;
             car.Year = DateTime.UtcNow.Year;
             car.Number = await _repository.GetNumberAsync();
 
-            // create object
+            // Create object
             await _repository.AddAsync(car);
 
-            // publish message to RabbitMq
+            // Publish message to RabbitMq
             var message = new CreateCarMessage(car.Id, $"{car.Year}/{car.Number}", "john.doe");
             await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "Cars", message);
 
-            // return id
+            // Return id
             return car.Id;
         }
     }

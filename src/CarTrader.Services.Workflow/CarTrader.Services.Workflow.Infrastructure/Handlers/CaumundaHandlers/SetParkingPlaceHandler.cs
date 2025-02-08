@@ -19,19 +19,19 @@ namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
 
         public async Task<IExecutionResult> HandleAsync(ExternalTask externalTask, CancellationToken cancellationToken)
         {
-            // logging info start
+            // Logging info start
             _logger.LogInformation("External_Task_Set_Parking_Place started work!");
 
-            // get carId from camunda variables
+            // Get carId from camunda variables
             var carId =  externalTask.GetVariableOrDefault<StringVariable>("carId").Value;
 
-            // get bussinesKey from camunda
+            // Get bussinesKey from camunda
             var bussinesKey = externalTask.BusinessKey;
 
-            // create message
+            // Create message
             var message = new SetParkingPlaceMessage(Guid.Parse(carId), bussinesKey);
 
-            // publish message to RabbitMq
+            // Publish message to RabbitMq
             var response = await _messagePublisher.SendRequestAsync<SetParkingPlaceRequest, SetParkingPlaceResponse>(
                 queue: "CarTraderSetParkingPlaceQueueRequests",
                 exchange: "CarTrader.Cars",
@@ -40,7 +40,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
                 handleResponse: _ => Task.CompletedTask
             );
 
-             // logging info finish
+             //Llogging info finish
             _logger.LogInformation("External_Task_Set_Parking_Place finished work!");
 
             // return null;

@@ -33,21 +33,21 @@ namespace CarTrader.Services.Workflow.Application.Services
                     "RegisterCar",
                     async (msg) =>
                     {
-                        // logger information
+                        // Logger information
                         _logger.LogInformation($"'{nameof(RegisterCarMsgSubscriberService)}' received {msg}");
 
-                        // get access to mediatr
+                        // Get access to mediatr
                         using var scope = _serviceScopeFactory.CreateScope();
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                        // create command
+                        // Create command
                         var command = new CompleteUserTaskCommand()
                         {
                             CarId = msg.CarId,
                             CamundaActivityId = _configuration["CamudaTasks:RegisterCarTaskId"]
                         };
 
-                        // call command
+                        // Call command
                         await mediator.Send(command);
                     }
                 );

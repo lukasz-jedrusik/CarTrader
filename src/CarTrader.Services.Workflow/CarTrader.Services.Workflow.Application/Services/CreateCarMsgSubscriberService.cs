@@ -30,14 +30,14 @@ namespace CarTrader.Services.Workflow.Application.Services
                     "Cars",
                     async (msg) =>
                     {
-                        // logging info start
+                        // Logging info start
                         _logger.LogInformation($"'{nameof(CreateCarMsgSubscriberService)}' received {msg}");
 
-                        // get access to mediatr
+                        // Get access to mediatr
                         using var scope = _serviceScopeFactory.CreateScope();
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                        // create command
+                        // Create command
                         var command = new StartProcessCommand()
                         {
                             CarId = msg.CarId,
@@ -45,7 +45,7 @@ namespace CarTrader.Services.Workflow.Application.Services
                             UserId = msg.CreatedBy
                         };
 
-                        // call command
+                        // Call command
                         await mediator.Send(command);
                     }
                 );

@@ -31,30 +31,30 @@ namespace CarTrader.Services.ParkingPlaces.Application.Services
                     "SetParkingPlaceRequestResponse",
                     async (msg) =>
                     {
-                        // logging info start
+                        // Logging info start
                         _logger.LogInformation($"'{nameof(SetParkingPlaceMsgSubscriberService)}' received {msg}");
 
-                        // get access to mediatr
+                        // Get access to mediatr
                         using var scope = _serviceScopeFactory.CreateScope();
                         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                        // create command
+                        // Create command
                         var command = new SetParkingPlaceCommand()
                         {
                             CarId = msg.CarId,
                             BussinesKey = msg.BussinesKey,
                         };
 
-                        // call command
+                        // Call command
                         var spot = await mediator.Send(command);
 
-                        // craete response message
+                        // Craete response message
                         var response = new SetParkingPlaceResponse(msg.CarId, msg.BussinesKey, $"{spot.Sector}{spot.PlaceNumber}");
 
-                        // logging info finish
+                        // Logging info finish
                         _logger.LogInformation("SetParkingPlaceMessageHandler finished work!");
 
-                        // retrun response message
+                        // Retrun response message
                         return response;
                     }
                 );

@@ -22,7 +22,7 @@ namespace CarTrader.Services.Workflow.Application.Commands.CompleteUserTask
             // Find current task with AcitivityId from request
             var taskToComplete = tasks.Find(x => x.TaskDefinitionKey == request.CamundaActivityId);
 
-            // return void if task doesn't exist
+            // Return void if task doesn't exist
             if (taskToComplete == null)
             {
                 return;

@@ -1,6 +1,4 @@
-using System.Reflection;
-using CarTrader.Services.Workflow.Application.Commands.StartProcess;
-using MediatR;
+using CarTrader.Services.Workflow.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CarTrader.Services.Workflow.Infrastructure.Extensions.MediatR
@@ -9,8 +7,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.Extensions.MediatR
     {
         public static IServiceCollection AddMediatR(this IServiceCollection services)
         {
-            //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(StartProcessCommand).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(BackgroundTaskQueue).Assembly));
             return services;
         }
     }

@@ -1,5 +1,4 @@
-using CarTrader.Services.Cars.Application.Commands.AddCar;
-using MediatR;
+using CarTrader.Services.Cars.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CarTrader.Services.Cars.Infrastructure.Extensions.MediatR
@@ -8,7 +7,7 @@ namespace CarTrader.Services.Cars.Infrastructure.Extensions.MediatR
     {
         public static IServiceCollection AddMediatR(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddCarCommand).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(BackgroundTaskQueue).Assembly));
             return services;
         }
     }

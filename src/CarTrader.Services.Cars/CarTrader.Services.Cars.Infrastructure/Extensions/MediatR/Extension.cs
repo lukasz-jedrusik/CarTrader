@@ -1,4 +1,3 @@
-using System.Reflection;
 using CarTrader.Services.Cars.Application.Commands.AddCar;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

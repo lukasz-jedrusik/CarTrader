@@ -18,7 +18,12 @@
         <bpmn:flowNodeRef>Task_Car_Workshop</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_05jhe4s" name="DIAGNOSTIC">
+        <bpmn:flowNodeRef>External_Task_Register_Car_Diagnostic</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Diagnostic</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>External_Task_Send_Notifcation_Diagnostiic</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0s8kx7b</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>External_Task_Send_Remider_Diagnostiic</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1j98h4a</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0p34i8k" name="PARKING">
         <bpmn:flowNodeRef>External_Task_Set_Parking_Place</bpmn:flowNodeRef>
@@ -57,10 +62,6 @@
       <bpmn:incoming>Flow_1v60t2q</bpmn:incoming>
       <bpmn:outgoing>Flow_0ozijiq</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_Diagnostic" name="Diagnostic" camunda:candidateGroups="DIAGNOSTIC">
-      <bpmn:incoming>Flow_1wpim99</bpmn:incoming>
-      <bpmn:outgoing>Flow_0inkoq7</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0inkoq7" sourceRef="Task_Diagnostic" targetRef="Gateway_0a7enkf" />
     <bpmn:sequenceFlow id="Flow_0n6stov" name="isWorkshopRequired==false" sourceRef="Gateway_0a7enkf" targetRef="Task_Sell_Preparing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isWorkshopRequired==false}</bpmn:conditionExpression>
@@ -78,12 +79,41 @@
       <bpmn:incoming>Flow_0bk6e3k</bpmn:incoming>
       <bpmn:outgoing>Flow_18gpaql</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1wpim99" sourceRef="External_Task_Set_Parking_Place" targetRef="Task_Diagnostic" />
+    <bpmn:sequenceFlow id="Flow_1wpim99" sourceRef="External_Task_Set_Parking_Place" targetRef="External_Task_Register_Car_Diagnostic" />
     <bpmn:serviceTask id="External_Task_Set_Parking_Place" name="Set Parking Place" camunda:type="external" camunda:topic="Topic_Set_Parking_Place">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_18gpaql</bpmn:incoming>
       <bpmn:outgoing>Flow_1wpim99</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="External_Task_Register_Car_Diagnostic" name="Register Car in Diagnostic" camunda:type="external" camunda:topic="Topic_Register_Car_Diagnostic">
+      <bpmn:incoming>Flow_1wpim99</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o70nmj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0m5g3pq" sourceRef="External_Task_Send_Notifcation_Diagnostiic" targetRef="Task_Diagnostic" />
+    <bpmn:userTask id="Task_Diagnostic" name="Diagnostic" camunda:candidateGroups="DIAGNOSTIC">
+      <bpmn:incoming>Flow_0m5g3pq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0inkoq7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="External_Task_Send_Notifcation_Diagnostiic" name="Send Notification" camunda:type="external" camunda:topic="Topic_Send_Notifcation_Diagnostiic">
+      <bpmn:incoming>Flow_0o70nmj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m5g3pq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0o70nmj" sourceRef="External_Task_Register_Car_Diagnostic" targetRef="External_Task_Send_Notifcation_Diagnostiic" />
+    <bpmn:boundaryEvent id="Event_0s8kx7b" attachedToRef="Task_Diagnostic">
+      <bpmn:outgoing>Flow_0gc7rku</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0gdfnaw">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R12/PT5M</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="External_Task_Send_Remider_Diagnostiic" name="Send Notification" camunda:type="external" camunda:topic="Topic_Send_Notifcation_Diagnostiic">
+      <bpmn:incoming>Flow_0gc7rku</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hnvosb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0gc7rku" sourceRef="Event_0s8kx7b" targetRef="External_Task_Send_Remider_Diagnostiic" />
+    <bpmn:sequenceFlow id="Flow_0hnvosb" sourceRef="External_Task_Send_Remider_Diagnostiic" targetRef="Event_1j98h4a" />
+    <bpmn:endEvent id="Event_1j98h4a">
+      <bpmn:incoming>Flow_0hnvosb</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0p97laf">
@@ -138,10 +168,6 @@
       <bpmndi:BPMNShape id="Activity_0ns7eu3_di" bpmnElement="Task_Car_Selling">
         <dc:Bounds x="1130" y="1370" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cekamy_di" bpmnElement="Task_Diagnostic">
-        <dc:Bounds x="490" y="610" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fh79xf_di" bpmnElement="Task_Register_Car">
         <dc:Bounds x="330" y="150" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -150,11 +176,33 @@
         <dc:Bounds x="410" y="390" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0avfkrg" bpmnElement="External_Task_Register_Car_Diagnostic">
+        <dc:Bounds x="410" y="600" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cekamy_di" bpmnElement="Task_Diagnostic">
+        <dc:Bounds x="740" y="600" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_12bov4v" bpmnElement="External_Task_Send_Notifcation_Diagnostiic">
+        <dc:Bounds x="570" y="600" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_08xj0fi" bpmnElement="External_Task_Send_Remider_Diagnostiic">
+        <dc:Bounds x="910" y="600" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j98h4a_di" bpmnElement="Event_1j98h4a">
+        <dc:Bounds x="1062" y="622" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_17fa0d4_di" bpmnElement="Event_0s8kx7b">
+        <dc:Bounds x="822" y="622" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0inkoq7_di" bpmnElement="Flow_0inkoq7">
-        <di:waypoint x="590" y="650" />
-        <di:waypoint x="623" y="650" />
-        <di:waypoint x="623" y="900" />
-        <di:waypoint x="645" y="900" />
+        <di:waypoint x="790" y="680" />
+        <di:waypoint x="790" y="783" />
+        <di:waypoint x="670" y="783" />
+        <di:waypoint x="670" y="875" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n6stov_di" bpmnElement="Flow_0n6stov">
         <di:waypoint x="670" y="925" />
@@ -200,8 +248,23 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1wpim99_di" bpmnElement="Flow_1wpim99">
         <di:waypoint x="460" y="470" />
-        <di:waypoint x="460" y="650" />
-        <di:waypoint x="490" y="650" />
+        <di:waypoint x="460" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m5g3pq_di" bpmnElement="Flow_0m5g3pq">
+        <di:waypoint x="670" y="640" />
+        <di:waypoint x="740" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o70nmj_di" bpmnElement="Flow_0o70nmj">
+        <di:waypoint x="510" y="640" />
+        <di:waypoint x="570" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gc7rku_di" bpmnElement="Flow_0gc7rku">
+        <di:waypoint x="858" y="640" />
+        <di:waypoint x="910" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hnvosb_di" bpmnElement="Flow_0hnvosb">
+        <di:waypoint x="1010" y="640" />
+        <di:waypoint x="1062" y="640" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

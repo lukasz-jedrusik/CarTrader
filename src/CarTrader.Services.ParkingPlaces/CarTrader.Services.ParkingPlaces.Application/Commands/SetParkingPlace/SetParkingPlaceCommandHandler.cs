@@ -1,6 +1,4 @@
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Repositories;
-using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
-using CarTrader.Services.ParkingPlaces.Application.Messages;
 using CarTrader.Services.ParkingPlaces.Domain.Exceptions;
 using CarTrader.Services.ParkingPlaces.Domain.Models;
 using MediatR;

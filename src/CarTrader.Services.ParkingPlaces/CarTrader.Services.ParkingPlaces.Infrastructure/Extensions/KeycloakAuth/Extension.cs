@@ -16,29 +16,29 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Extensions.KeycloakAut
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
-            {
-                o.RequireHttpsMetadata = true;
-                o.Authority = configuration["CPCLEANAPI_KEYCLOAK:AuthorityUrl"];
-                o.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateAudience = false,
-                    ValidAudience = configuration["CPCLEANAPI_KEYCLOAK:ClientId"],
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidIssuer = configuration["CPCLEANAPI_KEYCLOAK:AuthorityUrl"],
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                };
-            });
+                .AddJwtBearer(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    o =>
+                    {
+                        o.RequireHttpsMetadata = false;
+                        o.Authority = configuration["Keycloak:AuthorityUrl"];
+                        o.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidateAudience = false,
+                            ValidAudience = configuration["Keycloak:ClientId"],
+                            ValidateIssuerSigningKey = true,
+                            ValidateIssuer = true,
+                            ValidIssuer = configuration["Keycloak:AuthorityUrl"],
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.Zero,
+                        };
+                    });
 
-            services.AddAuthorization(options =>
-                {
-                    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                        .Build();
-                });
+            services.AddAuthorizationBuilder()
+                .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .Build());
 
             return services;
         }

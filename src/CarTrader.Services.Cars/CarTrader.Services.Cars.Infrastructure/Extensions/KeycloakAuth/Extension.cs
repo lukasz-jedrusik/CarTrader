@@ -20,15 +20,15 @@ namespace CarTrader.Services.Cars.Infrastructure.Extensions.KeycloakAuth
                     JwtBearerDefaults.AuthenticationScheme,
                     o =>
                     {
-                        o.RequireHttpsMetadata = true;
-                        o.Authority = configuration["CPCLEANAPI_KEYCLOAK:AuthorityUrl"];
+                        o.RequireHttpsMetadata = false;
+                        o.Authority = configuration["Keycloak:AuthorityUrl"];
                         o.TokenValidationParameters = new TokenValidationParameters()
                         {
                             ValidateAudience = false,
-                            ValidAudience = configuration["CPCLEANAPI_KEYCLOAK:ClientId"],
+                            ValidAudience = configuration["Keycloak:ClientId"],
                             ValidateIssuerSigningKey = true,
                             ValidateIssuer = true,
-                            ValidIssuer = configuration["CPCLEANAPI_KEYCLOAK:AuthorityUrl"],
+                            ValidIssuer = configuration["Keycloak:AuthorityUrl"],
                             ValidateLifetime = true,
                             ClockSkew = TimeSpan.Zero,
                         };

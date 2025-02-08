@@ -1,5 +1,4 @@
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Messages;
-using CarTrader.Services.ParkingPlaces.Application.Messages;
 
 namespace CarTrader.Services.ParkingPlaces.Application.Interfaces.Services
 {

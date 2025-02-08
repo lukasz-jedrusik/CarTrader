@@ -42,3 +42,12 @@ services:
       volumes:
         - ./rabbitmq/data/:/var/lib/rabbitmq/mnesia
 
+  maildev:
+      image: maildev/maildev
+      container_name: maildev
+      ports:
+        - "1080:80"
+        - "1025:1025"
+      environment:
+        - MAILDEV_SMTP_PORT=1025
+        - MAILDEV_WEB_PORT=80

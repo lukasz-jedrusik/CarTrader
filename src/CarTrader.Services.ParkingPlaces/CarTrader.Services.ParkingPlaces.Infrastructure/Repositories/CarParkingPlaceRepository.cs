@@ -15,10 +15,10 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<List<CarParkingPlace>> GetAllAsync() =>
-            _context.CarParkingPlaces.ToListAsync();
+        public Task<List<CarParkingPlace>> GetAllAsync()
+             => _context.CarParkingPlaces.ToListAsync();
 
-        public Task<CarParkingPlace> GetByIdAsync(Guid itemId) =>
-            _context.CarParkingPlaces.FirstOrDefaultAsync(x => x.CarId == itemId);
+        public Task<CarParkingPlace> GetByIdAsync(Guid itemId)
+            => _context.CarParkingPlaces.FirstOrDefaultAsync(x => x.CarId == itemId);
     }
 }

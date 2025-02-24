@@ -24,7 +24,7 @@ namespace CarTrader.Services.Workflow.Application.Services
                 $"Background Messaging service '{nameof(CreateCarMsgSubscriberService)}' is running");
 
             _messageSubscriber
-                .SubscribeMessage<CreateCarMessage>(
+                .SubscribeMessage<CreatedCarMessage>(
                     "CarTraderCarsQueue",
                     "CarTrader.Cars",
                     "Cars",
@@ -40,8 +40,7 @@ namespace CarTrader.Services.Workflow.Application.Services
                         // Create command
                         var command = new StartProcessCommand()
                         {
-                            CarId = msg.CarId,
-                            BussinesKey = msg.BussinesKey,
+                            Car = msg.Car,
                             UserId = msg.CreatedBy
                         };
 

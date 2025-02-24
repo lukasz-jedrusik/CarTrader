@@ -5,6 +5,7 @@ using Camunda.Api.Client.ProcessDefinition;
 using Camunda.Api.Client.ProcessInstance;
 using Camunda.Api.Client.UserTask;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
+using CarTrader.Services.Workflow.Domain.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace CarTrader.Services.Workflow.Infrastructure.Services
@@ -33,13 +34,19 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
             _camunda = CamundaClient.Create(_httpClient);
         }
 
-        public Task<ProcessInstanceWithVariables> StartProcessAsync(Guid carId, string bussinesKey, string userId)
+        public Task<ProcessInstanceWithVariables> StartProcessAsync(Car car, string userId)
         {
             var processParams = new StartProcessInstance()
                 .SetVariable("createdBy", VariableValue.FromObject(userId))
-                .SetVariable("carId", VariableValue.FromObject(carId.ToString()));
+                .SetVariable("carId", VariableValue.FromObject(car.Id.ToString()))
+                .SetVariable("manufacturer", VariableValue.FromObject(car.Manfacturer))
+                .SetVariable("model", VariableValue.FromObject(car.Model))
+                .SetVariable("year", VariableValue.FromObject(car.YearOfProduction))
+                .SetVariable("mileage", VariableValue.FromObject(car.Mileage))
+                .SetVariable("VIN", VariableValue.FromObject(car.VIN))
+                ;
 
-            processParams.BusinessKey = bussinesKey;
+            processParams.BusinessKey = $"{car.Year}/{car.Number}";
 
             return _camunda.ProcessDefinitions.ByKey(_configuration["Camunda:ProcessName"]).StartProcessInstance(processParams);
         }

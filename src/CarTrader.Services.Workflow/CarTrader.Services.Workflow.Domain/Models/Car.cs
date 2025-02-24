@@ -1,9 +1,8 @@
 namespace CarTrader.Services.Workflow.Domain.Models
 {
-    public class CarProcess
+    public class Car
     {
-        public string CamundaProcessId { get; set; }
-        public Guid CarId { get; set; }
+        public Guid Id { get; set; }
         public int Year { get; set; }
         public int Number { get; set; }
         public string Manfacturer { get; set; }

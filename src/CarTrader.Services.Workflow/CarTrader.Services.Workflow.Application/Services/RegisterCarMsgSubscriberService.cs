@@ -26,7 +26,7 @@ namespace CarTrader.Services.Workflow.Application.Services
             _logger.LogInformation(
                 $"Background Messaging service '{nameof(RegisterCarMsgSubscriberService)}' is running");
 
-            _messageSubscriber
+            _ = _messageSubscriber
                 .SubscribeMessage<TaskToCompletedMessage>(
                     "CarTraderRegisterCarQueue",
                     "CarTrader.Cars",

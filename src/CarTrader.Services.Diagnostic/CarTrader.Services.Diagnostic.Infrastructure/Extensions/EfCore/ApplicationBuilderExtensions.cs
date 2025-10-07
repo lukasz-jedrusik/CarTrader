@@ -24,7 +24,7 @@ namespace CarTrader.Services.Diagnostic.Infrastructure.Extensions.EfCore
             }
 
             // Log information about fetching configuration
-            logger.LogInformation("Applying EF database migraton completed");    
-        }    
+            logger.LogInformation("Applying EF database migraton completed");
+        }
     }
 }

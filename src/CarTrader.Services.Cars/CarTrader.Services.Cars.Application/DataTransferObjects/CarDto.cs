@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using CarTrader.Services.Cars.Domain.Enums;
 
 namespace CarTrader.Services.Cars.Application.DataTransferObjects

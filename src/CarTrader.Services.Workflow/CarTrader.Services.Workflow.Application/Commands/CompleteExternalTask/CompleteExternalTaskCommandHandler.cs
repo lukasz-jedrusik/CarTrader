@@ -2,7 +2,6 @@ using CarTrader.Services.Workflow.Application.Interfaces.Repositories;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using MediatR;
 
-
 namespace CarTrader.Services.Workflow.Application.Commands.CompleteExternalTask
 {
     public class CompleteExternalTaskCommandHandler(
@@ -29,8 +28,8 @@ namespace CarTrader.Services.Workflow.Application.Commands.CompleteExternalTask
                 return;
             }
 
-            // Complete task
-            await _camunda.CompleteTaskAsync(taskToComplete.Id);
+            // Complete extenral task
+            await _camunda.CompleteExternalTaskAsync(taskToComplete.Id, request.WorkerId, request.Variables);
         }
     }
 }

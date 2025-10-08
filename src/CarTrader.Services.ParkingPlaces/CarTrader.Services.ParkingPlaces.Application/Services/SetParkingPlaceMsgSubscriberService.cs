@@ -1,7 +1,6 @@
 using CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
-using CarTrader.Services.ParkingPlaces.Application.Requests;
-using CarTrader.Services.ParkingPlaces.Application.Responses;
+using CarTrader.Services.ParkingPlaces.Application.Messages;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,10 +24,10 @@ namespace CarTrader.Services.ParkingPlaces.Application.Services
                 $"Background Messaging service '{nameof(SetParkingPlaceMsgSubscriberService)}' is running");
 
             _messageSubscriber
-                .RespondToRequest<SetParkingPlaceRequest, SetParkingPlaceResponse>(
-                    "CarTraderSetParkingPlaceQueueRequests",
+                .SubscribeMessage<ParkingPlaceSetMessage>(
+                    "CarTraderSetParkingPlaceQueue",
                     "CarTrader.Cars",
-                    "SetParkingPlaceRequestResponse",
+                    "SetParkingPlace",
                     async (msg) =>
                     {
                         // Logging info start
@@ -46,16 +45,7 @@ namespace CarTrader.Services.ParkingPlaces.Application.Services
                         };
 
                         // Call command
-                        var spot = await mediator.Send(command);
-
-                        // Craete response message
-                        var response = new SetParkingPlaceResponse(msg.CarId, msg.BussinesKey, $"{spot.Sector}{spot.PlaceNumber}");
-
-                        // Logging info finish
-                        _logger.LogInformation("SetParkingPlaceMessageHandler finished work!");
-
-                        // Retrun response message
-                        return response;
+                        await mediator.Send(command);
                     }
                 );
 

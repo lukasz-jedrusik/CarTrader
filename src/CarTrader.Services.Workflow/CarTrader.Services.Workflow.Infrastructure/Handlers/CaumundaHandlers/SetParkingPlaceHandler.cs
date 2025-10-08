@@ -2,13 +2,11 @@ using Camunda.Worker;
 using Camunda.Worker.Variables;
 using CarTrader.Services.Workflow.Application.Interfaces.Services;
 using CarTrader.Services.Workflow.Application.Messages;
-using CarTrader.Services.Workflow.Application.Requests;
-using CarTrader.Services.Workflow.Application.Responses;
 using Microsoft.Extensions.Logging;
 
 namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
 {
-    [HandlerTopics("Topic_Set_Parking_Place", LockDuration = 10_000)]
+    [HandlerTopics("Topic_Set_Parking_Place", LockDuration = 60_000)]
     public class SetParkingPlaceHandler(
         ILogger<SetParkingPlaceHandler> logger,
         IMessagePublisher messagePublisher
@@ -32,27 +30,13 @@ namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
             var message = new SetParkingPlaceMessage(Guid.Parse(carId), bussinesKey);
 
             // Publish message to RabbitMq
-            var response = await _messagePublisher.SendRequestAsync<SetParkingPlaceRequest, SetParkingPlaceResponse>(
-                queue: "CarTraderSetParkingPlaceQueueRequests",
-                exchange: "CarTrader.Cars",
-                routingKey: "SetParkingPlaceRequestResponse",
-                request: new SetParkingPlaceRequest(Guid.Parse(carId), bussinesKey),
-                handleResponse: _ => Task.CompletedTask
-            );
+            await _messagePublisher.PublishMessageAsync("CarTrader.Cars", "SetParkingPlace", message);
 
-             //Llogging info finish
+            // Logging info finish
             _logger.LogInformation("External_Task_Set_Parking_Place finished work!");
 
-            // return null;
-
-            // return complete task to camunda
-            return new CompleteResult
-            {
-                Variables = new Dictionary<string, VariableBase>
-                {
-                    ["parkingPlace"] = new StringVariable(response.Spot)
-                }
-            };
+            // Do not complete ExternalTask
+            return new NoneResult();
         }
     }
 }

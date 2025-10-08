@@ -20,8 +20,11 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
             services.AddSingleton<IMessagePublisher, MessagePublisher>();
             services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
             services.AddSingleton<ICamundaService, CamundaService>();
+
+            // Message Subscribers
             services.AddHostedService<CreateCarMsgSubscriberService>();
             services.AddHostedService<RegisterCarMsgSubscriberService>();
+            services.AddHostedService<SendParkingPlaceMsgSubscriberService>();
 
             // HttpClients
             var retryPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode).RetryAsync(3);

@@ -79,9 +79,17 @@ namespace CarTrader.Services.Workflow.Infrastructure.Services
             return tasks;
         }
 
-        public async Task CompleteExternalTaskAsync(string camundaTaskId)
+        public async Task CompleteExternalTaskAsync(
+            string camundaTaskId,
+            string workerId,
+            Dictionary<string, VariableValue> variables = null)
         {
-            var completeTask = new CompleteExternalTask();
+            var completeTask = new CompleteExternalTask()
+            {
+                WorkerId = workerId,
+                Variables = variables
+            };
+
             await _camunda.ExternalTasks[camundaTaskId].Complete(completeTask);
         }
     }

@@ -1,3 +1,4 @@
+using Camunda.Api.Client;
 using Camunda.Api.Client.ExternalTask;
 using Camunda.Api.Client.ProcessInstance;
 using Camunda.Api.Client.UserTask;
@@ -11,6 +12,9 @@ namespace CarTrader.Services.Workflow.Application.Interfaces.Services
         Task<List<UserTaskInfo>> GetCurrentTasksAsync(string processId);
         Task CompleteTaskAsync(string camundaTaskId);
         Task<List<ExternalTaskInfo>> GetCurrentExternalTasksAsync(string processId);
-        Task CompleteExternalTaskAsync(string camundaTaskId);
+        Task CompleteExternalTaskAsync(
+            string camundaTaskId,
+            string workerId,
+            Dictionary<string, VariableValue> variables = null);
     }
 }

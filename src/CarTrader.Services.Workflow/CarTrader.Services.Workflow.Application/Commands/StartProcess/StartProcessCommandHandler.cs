@@ -8,7 +8,7 @@ namespace CarTrader.Services.Workflow.Application.Commands.StartProcess
     public class StartProcessCommandHandler(
         ICamundaService camunda,
         ICarProcessRepository repository
-            ) : IRequestHandler<StartProcessCommand, string>
+        ) : IRequestHandler<StartProcessCommand, string>
     {
         private readonly ICamundaService _camunda = camunda;
         private readonly ICarProcessRepository _repository = repository;

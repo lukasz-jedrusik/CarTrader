@@ -34,26 +34,34 @@ namespace CarTrader.Services.Workflow.Application.Services
                     "SendParkingPlace",
                     async (msg) =>
                     {
-                        // Logger information
-                        _logger.LogInformation($"'{nameof(SendParkingPlaceMsgSubscriberService)}' received {msg}");
-
-                        // Get access to mediatr
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-                        // Create command
-                        var command = new CompleteExternalTaskCommand()
+                        try
                         {
-                            CarId = msg.CarId,
-                            CamundaActivityId = _configuration["CamudaTasks:SetParkingPlaceTaskId"],
-                            WorkerId = "SetParkingPlaceWorker",
-                            Variables = new() {
-                                ["parkingPlace"] =  VariableValue.FromObject(msg.Spot)
-                            }
-                        };
+                            // Logger information
+                            _logger.LogInformation($"'{nameof(SendParkingPlaceMsgSubscriberService)}' received {msg}");
 
-                        // Call command
-                        await mediator.Send(command);
+                            // Get access to mediatr
+                            using var scope = _serviceScopeFactory.CreateScope();
+                            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                            // Create command
+                            var command = new CompleteExternalTaskCommand()
+                            {
+                                CarId = msg.CarId,
+                                CamundaActivityId = _configuration["CamudaTasks:SetParkingPlaceTaskId"],
+                                WorkerId = "SetParkingPlaceWorker",
+                                Variables = new()
+                                {
+                                    ["parkingPlace"] = VariableValue.FromObject(msg.Spot)
+                                }
+                            };
+
+                            // Call command
+                            await mediator.Send(command);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Error processing message for CarId {msg.CarId}");
+                        }
                     }
                 );
 

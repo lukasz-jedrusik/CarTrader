@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CarTrader.Services.Workflow.Infrastructure.Handlers.CaumundaHandlers
 {
-    [HandlerTopics("Topic_Set_Parking_Place", LockDuration = 60_000)]
+    [HandlerTopics("Topic_Set_Parking_Place", LockDuration = 10_000)]
     public class SetParkingPlaceHandler(
         ILogger<SetParkingPlaceHandler> logger,
         IMessagePublisher messagePublisher

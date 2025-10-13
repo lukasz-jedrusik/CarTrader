@@ -30,22 +30,29 @@ namespace CarTrader.Services.Workflow.Application.Services
                     "Cars",
                     async (msg) =>
                     {
-                        // Logging info start
-                        _logger.LogInformation($"'{nameof(CreateCarMsgSubscriberService)}' received {msg}");
-
-                        // Get access to mediatr
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-                        // Create command
-                        var command = new StartProcessCommand()
+                        try
                         {
-                            Car = msg.Car,
-                            UserId = msg.CreatedBy
-                        };
+                            // Logging info start
+                            _logger.LogInformation($"'{nameof(CreateCarMsgSubscriberService)}' received {msg}");
 
-                        // Call command
-                        await mediator.Send(command);
+                            // Get access to mediatr
+                            using var scope = _serviceScopeFactory.CreateScope();
+                            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                            // Create command
+                            var command = new StartProcessCommand()
+                            {
+                                Car = msg.Car,
+                                UserId = msg.CreatedBy
+                            };
+
+                            // Call command
+                            await mediator.Send(command);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Error processing message in creating Car service");
+                        }
                     }
                 );
 

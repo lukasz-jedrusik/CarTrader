@@ -6,7 +6,8 @@ namespace CarTrader.Services.ParkingPlaces.Domain.Exceptions
         {
         }
 
-        protected CarTraderParkingPlacesException(string message) : base(message)
+        protected CarTraderParkingPlacesException(string message)
+            : base(message)
         {
         }
 

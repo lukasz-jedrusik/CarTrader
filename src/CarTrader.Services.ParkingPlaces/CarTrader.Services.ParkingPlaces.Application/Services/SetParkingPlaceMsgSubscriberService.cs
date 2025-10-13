@@ -1,6 +1,7 @@
 using CarTrader.Services.ParkingPlaces.Application.Commands.SetParkingPlace;
 using CarTrader.Services.ParkingPlaces.Application.Interfaces.Services;
 using CarTrader.Services.ParkingPlaces.Application.Messages;
+using CarTrader.Services.ParkingPlaces.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,22 +31,29 @@ namespace CarTrader.Services.ParkingPlaces.Application.Services
                     "SetParkingPlace",
                     async (msg) =>
                     {
-                        // Logging info start
-                        _logger.LogInformation($"'{nameof(SetParkingPlaceMsgSubscriberService)}' received {msg}");
-
-                        // Get access to mediatr
-                        using var scope = _serviceScopeFactory.CreateScope();
-                        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-                        // Create command
-                        var command = new SetParkingPlaceCommand()
+                        try
                         {
-                            CarId = msg.CarId,
-                            BussinesKey = msg.BussinesKey,
-                        };
+                            // Logging info start
+                            _logger.LogInformation($"'{nameof(SetParkingPlaceMsgSubscriberService)}' received {msg}");
 
-                        // Call command
-                        await mediator.Send(command);
+                            // Get access to mediatr
+                            using var scope = _serviceScopeFactory.CreateScope();
+                            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                            // Create command
+                            var command = new SetParkingPlaceCommand()
+                            {
+                                CarId = msg.CarId,
+                                BussinesKey = msg.BussinesKey,
+                            };
+
+                            // Call command
+                            await mediator.Send(command);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Error processing message for CarId {msg.CarId}");
+                        }
                     }
                 );
 

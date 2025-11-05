@@ -23,6 +23,9 @@ namespace CarTrader.Services.Workflow.Infrastructure.Extensions.CamundaTaskWorke
             services.AddCamundaWorker("SetParkingPlaceWorker")
                 .AddHandler<SetParkingPlaceHandler>();
 
+            services.AddCamundaWorker("DiagnosticRegisterCarWorker")
+                .AddHandler<DiagnosticRegisterCarHandler>();
+
             return services;
         }
     }

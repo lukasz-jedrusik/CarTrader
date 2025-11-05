@@ -7,6 +7,7 @@ using CarTrader.Services.Diagnostic.Infrastructure.Extensions.KeycloakAuth;
 using CarTrader.Services.Diagnostic.Infrastructure.Extensions.MediatR;
 using CarTrader.Services.Diagnostic.Infrastructure.Extensions.RabbitMq;
 using CarTrader.Services.Diagnostic.Infrastructure.Extensions.Swagger;
+using Microsoft.AspNetCore.Http.Json;
 using NLog.Web;
 
 // Create builder
@@ -14,8 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers to services
 builder.Services
-    .AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true)
-    .AddJsonOptions(x => x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddControllers(x => x.AllowEmptyInputInBodyModelBinding = true);
+
+// Specify json options
+builder.Services.Configure<JsonOptions>(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
+);
 
 // Add Nlog
 builder.Logging.ClearProviders();

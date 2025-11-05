@@ -17,6 +17,8 @@ namespace CarTrader.Services.ParkingPlaces.Infrastructure.DependencyContainer
             // Services
             services.AddSingleton<IMessagePublisher, MessagePublisher>();
             services.AddSingleton<IMessageSubscriber, MessageSubscriber>();
+
+            // Message Subscribers
             services.AddHostedService<SetParkingPlaceMsgSubscriberService>();
 
             // Queue

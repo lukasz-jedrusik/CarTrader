@@ -43,7 +43,7 @@ namespace CarTrader.Services.Diagnostic.Api.Middleware
 
                 switch(error)
                 {
-                    case CarTraderException:
+                    case CarTraderDiagnosticException:
                     {
                         // Other CarTrader.Services.Diagnostic errors and argument null
                         response.StatusCode = (int)HttpStatusCode.BadRequest;

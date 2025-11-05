@@ -25,6 +25,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.DependencyContainer
             services.AddHostedService<CreateCarMsgSubscriberService>();
             services.AddHostedService<RegisterCarMsgSubscriberService>();
             services.AddHostedService<SendParkingPlaceMsgSubscriberService>();
+            services.AddHostedService<CarRegisteredInDiagnosticMsgSubcriber>();
 
             // HttpClients
             var retryPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode).RetryAsync(3);

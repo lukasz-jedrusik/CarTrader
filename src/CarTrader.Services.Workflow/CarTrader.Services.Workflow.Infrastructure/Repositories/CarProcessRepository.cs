@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CarTrader.Services.Workflow.Application.Interfaces.Repositories;
 using CarTrader.Services.Workflow.Domain.Models;
 using CarTrader.Services.Workflow.Infrastructure.Extensions.EfCore;
@@ -19,7 +15,7 @@ namespace CarTrader.Services.Workflow.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<CarProcess> GetByIdAsync(Guid itemId) =>
-            _context.CarProcesses.FirstOrDefaultAsync(x => x.CarId == itemId);
+        public Task<CarProcess> GetByIdAsync(Guid itemId)
+            => _context.CarProcesses.FirstOrDefaultAsync(x => x.CarId == itemId);
     }
 }
